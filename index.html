@@ -1,8 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<title>Index</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Fábrica</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Welcome to La Fabrica de Pedidos</h1>
+    <header>
+        <h1>Bienvenido a La Fábrica</h1>
+        <nav>
+            <ul>
+                <li><a href="#catalogo">Catálogo</a></li>
+                <li><a href="#carrito">Carrito</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="catalogo">
+            <h2>Catálogo de Productos</h2>
+            <div class="producto" id="producto-1">
+                <h3>Producto 1</h3>
+                <p>Descripción del producto 1.</p>
+                <button>Añadir al carrito</button>
+            </div>
+            <div class="producto" id="producto-2">
+                <h3>Producto 2</h3>
+                <p>Descripción del producto 2.</p>
+                <button>Añadir al carrito</button>
+            </div>
+        </section>
+        <section id="carrito">
+            <h2>Carrito</h2>
+            <div id="lista-carrito">
+                <!-- Items del carrito se agregarán aquí -->
+            </div>
+            <button id="comprar">Comprar</button>
+        </section>
+    </main>
+    <footer>
+        <p>Contacto: <a href="https://wa.me/1234567890">WhatsApp</a></p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>

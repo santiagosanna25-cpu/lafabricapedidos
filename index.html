@@ -1,309 +1,111 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>La Fábrica</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #0f0f0f;
-    color: white;
-    margin: 0;
-}
-header img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-}
-.inputs {
-    background: #1a1a1a;
-    padding: 15px;
-}
-.inputs input, .inputs textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border: none;
-    background: #2a2a2a;
-    color: white;
-}
-.container {
-    padding: 10px;
-    padding-bottom: 170px;
-}
-.product {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #1c1c1c;
-    margin-bottom: 12px;
-    padding: 10px;
-    border-radius: 12px;
-}
-.left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.foto {
-    width: 65px;
-    height: 65px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-.name {
-    font-weight: bold;
-    font-size: 14px;
-}
-.price {
-    color: #00ff88;
-    font-size: 13px;
-}
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-button {
-    background: #2f2f2f;
-    border: none;
-    color: white;
-    padding: 6px 8px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-.cantidad {
-    min-width: 25px;
-    text-align: center;
-}
-.total {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #000;
-    padding: 15px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.botones-footer {
-    display: flex;
-    gap: 10px;
-}
-.botones-footer button {
-    flex: 1;
-}
-.whatsapp {
-    background: #25d366;
-    color: black;
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 16px;
-}
-.imprimir {
-    background: #4a90e2;
-    color: white;
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 16px;
-}
-@media print {
-    body {
-        background: white;
-        color: black;
-        font-family: "Courier New", monospace;
-    }
-    header, .inputs, .container, .total {
-        display: none;
-    }
-    .print-ticket {
-        display: block !important;
-        background: white;
-        color: black;
-        padding: 10mm;
-        width: 80mm;
-        font-family: "Courier New", monospace;
-        font-size: 10pt;
-    }
-}
-.print-ticket {
-    display: none;
-    background: white;
-    color: black;
-    padding: 10mm;
-    width: 80mm;
-    font-family: "Courier New", monospace;
-    font-size: 10pt;
-}
-.print-ticket h2 {
-    text-align: center;
-    margin: 5mm 0;
-    font-size: 12pt;
-}
-.print-ticket .separator {
-    border-top: 1px dashed black;
-    margin: 3mm 0;
-}
-.print-ticket .item {
-    display: flex;
-    justify-content: space-between;
-    margin: 2mm 0;
-    font-size: 9pt;
-}
-.print-ticket .total-line {
-    display: flex;
-    justify-content: space-between;
-    margin: 3mm 0;
-    font-weight: bold;
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
-    padding: 2mm 0;
-}
-.print-ticket .footer {
-    text-align: center;
-    margin-top: 5mm;
-    font-size: 8pt;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Fabrica Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header>
-    <img src="logo.png">
-</header>
-<div class="inputs">
-    <input id="nombre" placeholder="👤 Tu nombre">
-    <textarea id="detalle" placeholder="📝 Aclaraciones (ej: sin sal, entregar mañana...)"></textarea>
-</div>
-<div class="container" id="products"></div>
-<div class="total">
-    <div>Total: $<span id="total">0</span></div>
-    <div class="botones-footer">
-        <button class="imprimir" onclick="imprimirPedido()">🖨️ Imprimir</button>
-        <button class="whatsapp" onclick="enviarPedido()" style="flex: 1;">📱 WhatsApp</button>
-    </div>
-</div>
-<div id="print-container"></div>
-<script>
-const productos = [
-    {nombre: "Dulce de leche", precio: 3600, img: "dulce.jpg"},
-    {nombre: "Quesillo tradicional norteño", precio: 3100, img: "quesillo.jpg"},
-    {nombre: "Dulce de chayote", precio: 3500, img: "chayote.jpg"},
-    {nombre: "Mini mortadela", precio: 5800, img: "mortadela.jpg"},
-    {nombre: "Queso semiduro", precio: 7500, img: "semiduro.jpg"},
-    {nombre: "Caciocavallo", precio: 8500, img: "caciocavallo.jpg"},
-    {nombre: "Holanda", precio: 7500, img: "holanda.jpg"},
-    {nombre: "Queso cáscara roja", precio: 7500, img: "cascararoja.jpg"},
-    {nombre: "Criollos medianos", precio: 4250, img: "criollos.jpg"},
-    {nombre: "Criollitos", precio: 3800, img: "criollitos.jpg"},
-    {nombre: "Queso criollo en barra", precio: 8300, img: "barra.jpg"},
-    {nombre: "Provoleta", precio: 4000, img: "provoleta.jpg"},
-    {nombre: "Criollitos al vacío", precio: 4100, img: "vacio.jpg"},
-    {nombre: "Quesillos x10", precio: 16000, img: "quesillos10.jpg"},
-    {nombre: "Higos en almíbar", precio: 3300, img: "higos.jpg"},
-    {nombre: "Criollo grande", precio: 7300, img: "grande.jpg"},
-    {nombre: "Rollitos de quesillo", precio: 1800, img: "rollitos.jpg"},
-    {nombre: "Chacarero bastón", precio: 6000, img: "chacarero.jpg"},
-    {nombre: "Salamines picado fino", precio: 3600, img: "salamin.jpg"},
-    {nombre: "Rollitos x5", precio: 8500, img: "rollitos5.jpg"},
-    {nombre: "Queso criollo", precio: 7000, img: "criollo.jpg"},
-    {nombre: "Salame criollo bastón", precio: 4500, img: "salame.jpg"}
-];
-let carrito = Array(productos.length).fill(0);
-function render() {
-    const container = document.getElementById("products");
-    container.innerHTML = "";
-    productos.forEach((p, i) => {
-        container.innerHTML += `
-        <div class="product">
-            <div class="left">
-                <img src="${p.img}" class="foto">
-                <div>
-                    <div class="name">${p.nombre}</div>
-                    <div class="price">$${p.precio}</div>
-                </div>
+    <header>
+        <h1>Welcome to La Fabrica Pedidos</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Our Products</h2>
+            <div class="product">
+                <img src="dulce.jpg.jpeg" alt="Dulce">
+                <p>Dulce: A delicious sweet treat.</p>
             </div>
-            <div class="controls">
-                <button onclick="cambiar(${i}, -10)">-10</button>
-                <button onclick="cambiar(${i}, -1)">-</button>
-                <div class="cantidad">${carrito[i]}</div>
-                <button onclick="cambiar(${i}, 1)">+</button>
-                <button onclick="cambiar(${i}, 10)">+10</button>
+            <div class="product">
+                <img src="quesillo.jpg.jpg" alt="Quesillo">
+                <p>Quesillo: A creamy cheese delight.</p>
             </div>
-        </div>`;
-    });
-}
-function cambiar(i, cantidad) {
-    carrito[i] += cantidad;
-    if (carrito[i] < 0) carrito[i] = 0;
-    actualizarTotal();
-    render();
-}
-function actualizarTotal() {
-    let total = 0;
-    productos.forEach((p, i) => {
-        total += p.precio * carrito[i];
-    });
-    document.getElementById("total").innerText = total;
-}
-function generarTicket() {
-    let hayProductos = carrito.some(c => c > 0);
-    if (!hayProductos) {
-        alert("No agregaste ningún producto.");
-        return null;
-    }
-    let nombre = document.getElementById("nombre").value || "CLIENTE";
-    let detalle = document.getElementById("detalle").value;
-    let total = document.getElementById("total").innerText;
-    let fecha = new Date().toLocaleString('es-AR');
-    let html = `<div class="print-ticket"><h2>LA FÁBRICA</h2><div class="separator"></div><div style="text-align: center; margin: 2mm 0;"><strong>${nombre}</strong><br>${fecha}</div><div class="separator"></div>`;
-    productos.forEach((p, i) => {
-        if (carrito[i] > 0) {
-            let subtotal = p.precio * carrito[i];
-            html += `<div class="item"><span>${p.nombre}</span><span>x${carrito[i]}</span></div><div class="item" style="text-align: right; font-size: 8pt; margin-bottom: 2mm;">$${p.precio} c/u = $${subtotal}</div>`;
-        }
-    });
-    html += `<div class="separator"></div><div class="total-line"><span>TOTAL:</span><span>$${total}</span></div>`;
-    if (detalle) {
-        html += `<div style="margin-top: 3mm; font-size: 9pt; border-top: 1px dashed black; padding-top: 2mm;"><strong>Aclaraciones:</strong><br>${detalle}</div>`;
-    }
-    html += `<div class="footer"><br><br>Gracias por su compra<br>¡Que disfrutes!</div></div>`;
-    return html;
-}
-function imprimirPedido() {
-    let ticket = generarTicket();
-    if (!ticket) return;
-    let printContainer = document.getElementById("print-container");
-    printContainer.innerHTML = ticket;
-    setTimeout(() => { window.print(); }, 100);
-}
-function enviarPedido() {
-    let hayProductos = carrito.some(c => c > 0);
-    if (!hayProductos) {
-        alert("No agregaste ningún producto.");
-        return;
-    }
-    let nombre = document.getElementById("nombre").value;
-    let detalle = document.getElementById("detalle").value;
-    let mensaje = "🧀 Pedido - La Fábrica:\n\n";
-    if (nombre) mensaje += "👤 " + nombre + "\n\n";
-    productos.forEach((p, i) => {
-        if (carrito[i] > 0) {
-            mensaje += `${p.nombre} x${carrito[i]}\n`;
-        }
-    });
-    mensaje += `\n💰 Total: $${document.getElementById("total").innerText}`;
-    if (detalle) mensaje += "\n\n📝 " + detalle;
-    const telefono = "5493816062471";
-    window.open("https://wa.me/" + telefono + "?text=" + encodeURIComponent(mensaje));
-}
-render();
-</script>
+            <div class="product">
+                <img src="chayote.jpg.jpeg" alt="Chayote">
+                <p>Chayote: A nutritious vegetable.</p>
+            </div>
+            <div class="product">
+                <img src="mortadela.jpg.jpeg" alt="Mortadela">
+                <p>Mortadela: A tasty cold cut.</p>
+            </div>
+            <div class="product">
+                <img src="semiduro.jpg.jpeg" alt="Semiduro">
+                <p>Semi Duro: A semi-hard cheese.</p>
+            </div>
+            <div class="product">
+                <img src="caciocavallo.jpg.jpeg" alt="Caciocavallo">
+                <p>Caciocavallo: An Italian cheese.</p>
+            </div>
+            <div class="product">
+                <img src="holanda.jpg.jpg" alt="Holanda">
+                <p>Holanda: A flavorful cheese.</p>
+            </div>
+            <div class="product">
+                <img src="cascararoja.jpg.jpg" alt="Cascararoja">
+                <p>Cascararoja: A traditional delicacy.</p>
+            </div>
+            <div class="product">
+                <img src="criollos.jpg.jpg" alt="Criollos">
+                <p>Criollos: Savory pastries.</p>
+            </div>
+            <div class="product">
+                <img src="criollitos.jpg.jpg" alt="Criollitos">
+                <p>Criollitos: Smaller version of Criollos.</p>
+            </div>
+            <div class="product">
+                <img src="barra.jpg.jpg" alt="Barra">
+                <p>Barra: A filling treat.</p>
+            </div>
+            <div class="product">
+                <img src="provoleta.jpg.jpg" alt="Provoleta">
+                <p>Provoleta: Grilled cheese dish.</p>
+            </div>
+            <div class="product">
+                <img src="vacio.jpg.jpeg" alt="Vacio">
+                <p>Vacio: A cut of beef.</p>
+            </div>
+            <div class="product">
+                <img src="quesillos10.jpg.jpeg" alt="Quesillos10">
+                <p>Quesillos10: A twist on the traditional.</p>
+            </div>
+            <div class="product">
+                <img src="higos.jpg.jpg" alt="Higos">
+                <p>Higos: Sweet figs.</p>
+            </div>
+            <div class="product">
+                <img src="grande.jpg.jpg" alt="Grande">
+                <p>Grande: A large option.</p>
+            </div>
+            <div class="product">
+                <img src="rollitos.jpg.jpg" alt="Rollitos">
+                <p>Rollitos: Delicious rolls.</p>
+            </div>
+            <div class="product">
+                <img src="chacarero.jpg.jpg" alt="Chacarero">
+                <p>Chacarero: A traditional sandwich.</p>
+            </div>
+            <div class="product">
+                <img src="salamin.jpg.jpg" alt="Salamin">
+                <p>Salamin: A type of salami.</p>
+            </div>
+            <div class="product">
+                <img src="rollitos5.jpg.jpg" alt="Rollitos5">
+                <p>Rollitos5: A variant of rollitos.</p>
+            </div>
+            <div class="product">
+                <img src="criollo.jpg.jpg" alt="Criollo">
+                <p>Criollo: Local specialty.</p>
+            </div>
+            <div class="product">
+                <img src="salame.jpg.jpg" alt="Salame">
+                <p>Salame: Another salami option.</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 La Fabrica Pedidos</p>
+    </footer>
+    <script src="scripts.js"></script>
 </body>
 </html>

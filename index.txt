@@ -210,26 +210,26 @@
 const productos = [
     {nombre:"Dulce de leche", precio:4000, img:"dulce.jpg"},
     {nombre:"Quesillo tradicional", precio:3500, img:"quesillo.jpg"},
-    {nombre:"Dulce de chayote", precio:3800, img:"chayote.jpg"},
-    {nombre:"Mini mortadela", precio:6500, img:"mortadela.jpg"},
-    {nombre:"Queso semiduro", precio:8000, img:"semiduro.jpg"},
-    {nombre:"Caciocavallo", precio:8500, img:"caciocavallo.jpg"},
-    {nombre:"Holanda", precio:7500, img:"holanda.jpg"},
-    {nombre:"Queso cáscara roja", precio:7500, img:"cascararoja.jpg"},
+    {nombre:"Dulce de chayote", precio:4000, img:"chayote.jpg"},
+    {nombre:"Mini mortadela", precio:6600, img:"mortadela.jpg"},
+    {nombre:"Queso semiduro", precio:8500, img:"semiduro.jpg"},
+    {nombre:"Caciocavallo", precio:9000, img:"caciocavallo.jpg"},
+    {nombre:"Holanda", precio:8200, img:"holanda.jpg"},
+    {nombre:"Queso cáscara roja", precio:8200, img:"cascararoja.jpg"},
     {nombre:"Criollos medianos", precio:4800, img:"criollos.jpg"},
     {nombre:"Criollitos", precio:4500, img:"criollitos.jpg"},
-    {nombre:"Queso criollo en barra", precio:9700, img:"barra.jpg"},
-    {nombre:"Provoleta", precio:4000, img:"provoleta.jpg"},
-    {nombre:"Criollitos al vacío", precio:4800, img:"vacio.jpg"},
+    {nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg"},
+    {nombre:"Provoleta", precio:5000, img:"provoleta.jpg"},
+    {nombre:"Criollitos al vacío", precio:4900, img:"vacio.jpg"},
     {nombre:"Quesillos x10", precio:18000, img:"quesillos10.jpg"},
-    {nombre:"Higos en almíbar", precio:3600, img:"higos.jpg"},
+    {nombre:"Higos en almíbar", precio:3800, img:"higos.jpg"},
     {nombre:"Criollo grande", precio:8500, img:"grande.jpg"},
     {nombre:"Rollitos de quesillo", precio:2100, img:"rollitos.jpg"},
     {nombre:"Chacarero bastón", precio:6900, img:"chacarero.jpg"},
     {nombre:"Salamines picado fino", precio:3800, img:"salamin.jpg"},
     {nombre:"Rollitos x5", precio:10500, img:"rollitos5.jpg"},
     {nombre:"Queso criollo", precio:8000, img:"criollo.jpg"},
-    {nombre:"Salame criollo bastón", precio:6600, img:"salame.jpg"}
+    {nombre:"Salame criollo bastón", precio:6800, img:"salame.jpg"}
 ];
 
 let carrito = Array(productos.length).fill(0);

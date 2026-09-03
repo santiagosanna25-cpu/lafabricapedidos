@@ -53,7 +53,7 @@ header img{
     padding:10px;
     padding-bottom:160px;
 }
-/* CATEGORIA */
+/* CATEGORIAS */
 .categoria{
     margin-bottom:20px;
 }
@@ -66,7 +66,7 @@ header img{
     background:#222;
     border-left:5px solid #00ff88;
 }
-/* PRODUCTO */
+/* PRODUCTOS */
 .product{
     display:flex;
     align-items:center;
@@ -175,9 +175,9 @@ header img{
 #print-container{
     display:none;
 }
-/* ================================
-   IMPRESIÓN 80 MM
-================================ */
+/* =========================================
+   IMPRESION TICKET TERMICO 80 MM
+========================================= */
 @media print{
     @page{
         size:80mm auto;
@@ -213,6 +213,20 @@ header img{
         line-height:1.25;
         overflow:visible;
     }
+    #print-container > div{
+        width:100%;
+    }
+    #print-container h2{
+        font-size:20px;
+        margin:0 0 3px 0;
+    }
+    #print-container h3{
+        font-size:16px;
+        margin:5px 0;
+    }
+    #print-container p{
+        margin:2px 0;
+    }
     #print-container table{
         width:100%;
         border-collapse:collapse;
@@ -232,17 +246,6 @@ header img{
         width:30%;
         text-align:right;
         white-space:nowrap;
-    }
-    #print-container h2{
-        font-size:20px;
-        margin-bottom:3px;
-    }
-    #print-container h3{
-        font-size:16px;
-        margin:5px 0;
-    }
-    #print-container p{
-        margin:2px 0;
     }
     #print-container .categoria-ticket{
         margin-top:8px;
@@ -301,41 +304,13 @@ onclick="enviarPedido()"
    PRODUCTOS
 ========================================== */
 const productos = [
-    /* QUESOS */
-    {
-        nombre:"Queso semiduro",
-        precio:8500,
-        img:"semiduro.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Holanda",
-        precio:8200,
-        img:"holanda.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso cáscara roja",
-        precio:8200,
-        img:"cascararoja.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollos medianos",
-        precio:4800,
-        img:"criollos.jpg",
-        categoria:"Quesos"
-    },
+    /* =====================================
+       QUESOS
+    ===================================== */
     {
         nombre:"Criollitos",
         precio:4500,
         img:"criollitos.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso criollo en barra",
-        precio:10000,
-        img:"barra.jpg",
         categoria:"Quesos"
     },
     {
@@ -345,18 +320,50 @@ const productos = [
         categoria:"Quesos"
     },
     {
+        nombre:"Queso criollo",
+        precio:8000,
+        img:"criollo.jpg",
+        categoria:"Quesos"
+    },
+    {
         nombre:"Criollo grande",
         precio:8500,
         img:"grande.jpg",
         categoria:"Quesos"
     },
     {
-        nombre:"Queso criollo",
-        precio:8000,
-        img:"criollo.jpg",
+        nombre:"Criollos medianos",
+        precio:5500,
+        img:"criollos.jpg",
         categoria:"Quesos"
     },
-    /* QUESILLOS */
+    {
+        nombre:"Queso cáscara roja",
+        precio:8200,
+        img:"cascararoja.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Holanda",
+        precio:8200,
+        img:"holanda.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso semiduro",
+        precio:8500,
+        img:"semiduro.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo en barra",
+        precio:10000,
+        img:"barra.jpg",
+        categoria:"Quesos"
+    },
+    /* =====================================
+       QUESILLOS
+    ===================================== */
     {
         nombre:"Quesillo tradicional",
         precio:3500,
@@ -393,7 +400,9 @@ const productos = [
         img:"rollitos5.jpg",
         categoria:"Quesillos"
     },
-    /* DULCES */
+    /* =====================================
+       DULCES
+    ===================================== */
     {
         nombre:"Dulce de leche",
         precio:4000,
@@ -412,7 +421,9 @@ const productos = [
         img:"higos.jpg",
         categoria:"Dulces"
     },
-    /* SALAMES */
+    /* =====================================
+       SALAMES
+    ===================================== */
     {
         nombre:"Mini mortadela",
         precio:6600,
@@ -440,23 +451,28 @@ const productos = [
 ];
 let carrito = Array(productos.length).fill(0);
 /* ==========================================
-   RENDER
+   CATEGORIAS
+========================================== */
+const categorias = [
+    "Quesos",
+    "Quesillos",
+    "Dulces",
+    "Salames"
+];
+/* ==========================================
+   MOSTRAR PRODUCTOS
 ========================================== */
 function render(){
     const container =
         document.getElementById("products");
     container.innerHTML = "";
-    const categorias = [
-        "Quesos",
-        "Quesillos",
-        "Dulces",
-        "Salames"
-    ];
     categorias.forEach(categoria => {
         const productosCategoria =
             productos
             .map((p,i)=>({p,i}))
-            .filter(x=>x.p.categoria === categoria);
+            .filter(x =>
+                x.p.categoria === categoria
+            );
         if(productosCategoria.length === 0){
             return;
         }
@@ -551,12 +567,6 @@ function enviarPedido(){
         `🧀 *PEDIDO - LA FÁBRICA*\n` +
         `👤 Cliente: ${nombre}\n` +
         `--------------------------\n`;
-    const categorias = [
-        "Quesos",
-        "Quesillos",
-        "Dulces",
-        "Salames"
-    ];
     categorias.forEach(categoria=>{
         const seleccionados =
             productos
@@ -588,7 +598,7 @@ function enviarPedido(){
     );
 }
 /* ==========================================
-   IMPRIMIR
+   IMPRIMIR TICKET
 ========================================== */
 function imprimirPedido(){
     if(!carrito.some(c=>c>0)){
@@ -613,12 +623,7 @@ function imprimirPedido(){
             <p>--------------------------------</p>
         </div>
     `;
-    const categorias = [
-        "Quesos",
-        "Quesillos",
-        "Dulces",
-        "Salames"
-    ];
+    /* PRODUCTOS AGRUPADOS POR CATEGORIA */
     categorias.forEach(categoria=>{
         const seleccionados =
             productos
@@ -654,6 +659,7 @@ function imprimirPedido(){
         });
         ticketHtml += `</table>`;
     });
+    /* TOTAL */
     ticketHtml += `
         <div style="text-align:center;">
             <p>--------------------------------</p>
@@ -675,6 +681,9 @@ function imprimirPedido(){
         ticketHtml;
     window.print();
 }
+/* ==========================================
+   INICIAR
+========================================== */
 render();
 </script>
 </body>

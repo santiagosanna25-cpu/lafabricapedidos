@@ -1,395 +1,585 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>La Fábrica - Tienda de Artesanales</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            touch-action: manipulation;
-            background: #0f0f0f;
-            color: white;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        /* HEADER */
-        header {
-            width: 100%;
-            height: 160px;
-            overflow: hidden;
-            border-bottom: 2px solid #1a1a1a;
-        }
-        header img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        /* INPUTS */
-        .inputs {
-            background: #1a1a1a;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .inputs input,
-        .inputs textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            background: #2a2a2a;
-            color: white;
-            font-size: 15px;
-            outline: none;
-        }
-        /* PRODUCTOS */
-        .container {
-            padding: 10px;
-            padding-bottom: 160px;
-        }
-        .product {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #1c1c1c;
-            margin-bottom: 12px;
-            padding: 12px;
-            border-radius: 14px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-        .foto {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 10px;
-            background: #2a2a2a;
-        }
-        .info-prod {
-            display: flex;
-            flex-direction: column;
-        }
-        .name {
-            font-weight: bold;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        .price {
-            color: #00ff88;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        /* CONTROLES */
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-qty {
-            background: #333;
-            border: none;
-            color: white;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            min-width: 35px;
-        }
-        .btn-qty:active {
-            background: #444;
-            transform: scale(0.9);
-        }
-        .cantidad {
-            min-width: 25px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: #fff;
-        }
-        /* FOOTER */
-        .total {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-top: 1px solid #333;
-        }
-        .total-text {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .botones-footer {
-            display: flex;
-            gap: 10px;
-        }
-        .botones-footer button {
-            flex: 1;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            font-weight: bold;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .whatsapp {
-            background: #25d366;
-            color: black;
-        }
-        .imprimir {
-            background: #4a90e2;
-            color: white;
-        }
-        /* TICKET */
-        #print-container {
-            display: none;
-        }
-        /* =========================================
-           IMPRESIÓN - TICKET TÉRMICO 80 MM
-           ========================================= */
-        @media print {
-            @page {
-                size: 80mm auto;
-                margin: 0;
-            }
-            html,
-            body {
-                width: 80mm;
-                min-width: 80mm;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-            }
-            body * {
-                visibility: hidden;
-            }
-            #print-container,
-            #print-container * {
-                visibility: visible;
-            }
-            #print-container {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 80mm;
-                margin: 0;
-                padding: 3mm;
-                display: block !important;
-                color: black !important;
-                background: white !important;
-                font-family: monospace;
-                font-size: 12px;
-                line-height: 1.25;
-                overflow: visible;
-            }
-            #print-container > div {
-                width: 100%;
-            }
-            #print-container h2 {
-                font-size: 20px;
-                margin: 0 0 3px 0;
-            }
-            #print-container h3 {
-                font-size: 16px;
-                margin: 5px 0;
-            }
-            #print-container p {
-                margin: 2px 0;
-            }
-            #print-container table {
-                width: 100%;
-                border-collapse: collapse;
-                table-layout: fixed;
-            }
-            #print-container td {
-                padding: 2px 0;
-                vertical-align: top;
-                word-wrap: break-word;
-            }
-            #print-container td:first-child {
-                width: 70%;
-                text-align: left;
-                padding-right: 5px;
-            }
-            #print-container td:last-child {
-                width: 30%;
-                text-align: right;
-                white-space: nowrap;
-            }
-            /* Evita cortes innecesarios */
-            #print-container,
-            #print-container table,
-            #print-container tr {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Fábrica - Tienda de Artesanales</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+html,body{
+    touch-action:manipulation;
+    background:#0f0f0f;
+    color:white;
+    font-family:'Segoe UI',Arial,sans-serif;
+}
+/* HEADER */
+header{
+    width:100%;
+    height:160px;
+    overflow:hidden;
+    border-bottom:2px solid #1a1a1a;
+}
+header img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+/* INPUTS */
+.inputs{
+    background:#1a1a1a;
+    padding:15px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+.inputs input,
+.inputs textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:10px;
+    border:1px solid #333;
+    background:#2a2a2a;
+    color:white;
+    font-size:15px;
+    outline:none;
+}
+/* CONTENEDOR */
+.container{
+    padding:10px;
+    padding-bottom:160px;
+}
+/* CATEGORIA */
+.categoria{
+    margin-bottom:20px;
+}
+.titulo-categoria{
+    font-size:20px;
+    font-weight:bold;
+    padding:12px 10px;
+    margin-bottom:10px;
+    border-radius:10px;
+    background:#222;
+    border-left:5px solid #00ff88;
+}
+/* PRODUCTO */
+.product{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#1c1c1c;
+    margin-bottom:12px;
+    padding:12px;
+    border-radius:14px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.3);
+}
+.left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+}
+.foto{
+    width:70px;
+    height:70px;
+    object-fit:cover;
+    border-radius:10px;
+    background:#2a2a2a;
+}
+.info-prod{
+    display:flex;
+    flex-direction:column;
+}
+.name{
+    font-weight:bold;
+    font-size:15px;
+    margin-bottom:4px;
+}
+.price{
+    color:#00ff88;
+    font-size:14px;
+    font-weight:bold;
+}
+/* CONTROLES */
+.controls{
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+.btn-qty{
+    background:#333;
+    border:none;
+    color:white;
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:bold;
+    min-width:35px;
+}
+.btn-qty:active{
+    background:#444;
+    transform:scale(0.9);
+}
+.cantidad{
+    min-width:25px;
+    text-align:center;
+    font-weight:bold;
+    font-size:16px;
+    color:#fff;
+}
+/* FOOTER */
+.total{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:rgba(0,0,0,0.95);
+    backdrop-filter:blur(10px);
+    padding:15px;
+    border-top:1px solid #333;
+}
+.total-text{
+    font-size:20px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:10px;
+}
+.botones-footer{
+    display:flex;
+    gap:10px;
+}
+.botones-footer button{
+    flex:1;
+    padding:15px;
+    border-radius:12px;
+    border:none;
+    font-weight:bold;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+.whatsapp{
+    background:#25d366;
+    color:black;
+}
+.imprimir{
+    background:#4a90e2;
+    color:white;
+}
+/* TICKET */
+#print-container{
+    display:none;
+}
+/* ================================
+   IMPRESIÓN 80 MM
+================================ */
+@media print{
+    @page{
+        size:80mm auto;
+        margin:0;
+    }
+    html,
+    body{
+        width:80mm;
+        min-width:80mm;
+        margin:0!important;
+        padding:0!important;
+        background:white!important;
+    }
+    body *{
+        visibility:hidden;
+    }
+    #print-container,
+    #print-container *{
+        visibility:visible;
+    }
+    #print-container{
+        position:absolute;
+        left:0;
+        top:0;
+        width:80mm;
+        margin:0;
+        padding:3mm;
+        display:block!important;
+        color:black!important;
+        background:white!important;
+        font-family:monospace;
+        font-size:12px;
+        line-height:1.25;
+        overflow:visible;
+    }
+    #print-container table{
+        width:100%;
+        border-collapse:collapse;
+        table-layout:fixed;
+    }
+    #print-container td{
+        padding:2px 0;
+        vertical-align:top;
+        word-wrap:break-word;
+    }
+    #print-container td:first-child{
+        width:70%;
+        text-align:left;
+        padding-right:5px;
+    }
+    #print-container td:last-child{
+        width:30%;
+        text-align:right;
+        white-space:nowrap;
+    }
+    #print-container h2{
+        font-size:20px;
+        margin-bottom:3px;
+    }
+    #print-container h3{
+        font-size:16px;
+        margin:5px 0;
+    }
+    #print-container p{
+        margin:2px 0;
+    }
+    #print-container .categoria-ticket{
+        margin-top:8px;
+        margin-bottom:3px;
+        font-weight:bold;
+        font-size:13px;
+        border-bottom:1px dashed black;
+        padding-bottom:2px;
+    }
+    #print-container tr{
+        break-inside:avoid;
+        page-break-inside:avoid;
+    }
+}
+</style>
 </head>
 <body>
 <header>
-    <img src="logo.png" alt="Logo La Fábrica">
+<img src="logo.png" alt="Logo La Fábrica">
 </header>
 <div class="inputs">
-    <input id="nombre" type="text" placeholder="👤 Nombre del cliente">
-    <textarea id="detalle" rows="2" placeholder="📝 Notas (ej: feteado, sin sal...)"></textarea>
+<input
+id="nombre"
+type="text"
+placeholder="👤 Nombre del cliente"
+>
+<textarea
+id="detalle"
+rows="2"
+placeholder="📝 Notas (ej: feteado, sin sal...)"
+></textarea>
 </div>
 <div class="container" id="products"></div>
 <div class="total">
-    <div class="total-text">
-        Total: $<span id="total">0</span>
-    </div>
-    <div class="botones-footer">
-        <button class="imprimir" onclick="imprimirPedido()">
-            🖨️ Ticket
-        </button>
-        <button class="whatsapp" onclick="enviarPedido()">
-            📱 WhatsApp
-        </button>
-    </div>
+<div class="total-text">
+Total: $<span id="total">0</span>
+</div>
+<div class="botones-footer">
+<button
+class="imprimir"
+onclick="imprimirPedido()"
+>
+🖨️ Ticket
+</button>
+<button
+class="whatsapp"
+onclick="enviarPedido()"
+>
+📱 WhatsApp
+</button>
+</div>
 </div>
 <div id="print-container"></div>
 <script>
+/* ==========================================
+   PRODUCTOS
+========================================== */
 const productos = [
-    {nombre:"Dulce de leche", precio:4000, img:"dulce.jpg"},
-    {nombre:"Quesillo tradicional", precio:3500, img:"quesillo.jpg"},
-    {nombre:"Dulce de chayote", precio:4000, img:"chayote.jpg"},
-    {nombre:"Mini mortadela", precio:6600, img:"mortadela.jpg"},
-    {nombre:"Queso semiduro", precio:8500, img:"semiduro.jpg"},
-    {nombre:"Caciocavallo", precio:9000, img:"caciocavallo.jpg"},
-    {nombre:"Holanda", precio:8200, img:"holanda.jpg"},
-    {nombre:"Queso cáscara roja", precio:8200, img:"cascararoja.jpg"},
-    {nombre:"Criollos medianos", precio:4800, img:"criollos.jpg"},
-    {nombre:"Criollitos", precio:4500, img:"criollitos.jpg"},
-    {nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg"},
-    {nombre:"Provoleta", precio:5000, img:"provoleta.jpg"},
-    {nombre:"Criollitos al vacío", precio:4900, img:"vacio.jpg"},
-    {nombre:"Quesillos x10", precio:18000, img:"quesillos10.jpg"},
-    {nombre:"Higos en almíbar", precio:3800, img:"higos.jpg"},
-    {nombre:"Criollo grande", precio:8500, img:"grande.jpg"},
-    {nombre:"Rollitos de quesillo", precio:2100, img:"rollitos.jpg"},
-    {nombre:"Chacarero bastón", precio:7000, img:"chacarero.jpg"},
-    {nombre:"Salamines picado fino", precio:4200, img:"salamin.jpg"},
-    {nombre:"Rollitos x5", precio:10500, img:"rollitos5.jpg"},
-    {nombre:"Queso criollo", precio:8000, img:"criollo.jpg"},
-    {nombre:"Salame criollo bastón", precio:7000, img:"salame.jpg"}
+    /* QUESOS */
+    {
+        nombre:"Queso semiduro",
+        precio:8500,
+        img:"semiduro.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Holanda",
+        precio:8200,
+        img:"holanda.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso cáscara roja",
+        precio:8200,
+        img:"cascararoja.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollos medianos",
+        precio:4800,
+        img:"criollos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollitos",
+        precio:4500,
+        img:"criollitos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo en barra",
+        precio:10000,
+        img:"barra.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollitos al vacío",
+        precio:4900,
+        img:"vacio.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollo grande",
+        precio:8500,
+        img:"grande.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo",
+        precio:8000,
+        img:"criollo.jpg",
+        categoria:"Quesos"
+    },
+    /* QUESILLOS */
+    {
+        nombre:"Quesillo tradicional",
+        precio:3500,
+        img:"quesillo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Caciocavallo",
+        precio:9000,
+        img:"caciocavallo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Provoleta",
+        precio:5000,
+        img:"provoleta.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Quesillos x10",
+        precio:18000,
+        img:"quesillos10.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos de quesillo",
+        precio:2100,
+        img:"rollitos.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos x5",
+        precio:10500,
+        img:"rollitos5.jpg",
+        categoria:"Quesillos"
+    },
+    /* DULCES */
+    {
+        nombre:"Dulce de leche",
+        precio:4000,
+        img:"dulce.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Dulce de chayote",
+        precio:4000,
+        img:"chayote.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Higos en almíbar",
+        precio:3800,
+        img:"higos.jpg",
+        categoria:"Dulces"
+    },
+    /* SALAMES */
+    {
+        nombre:"Mini mortadela",
+        precio:6600,
+        img:"mortadela.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Chacarero bastón",
+        precio:7000,
+        img:"chacarero.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salamines picado fino",
+        precio:4200,
+        img:"salamin.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salame criollo bastón",
+        precio:7000,
+        img:"salame.jpg",
+        categoria:"Salames"
+    }
 ];
 let carrito = Array(productos.length).fill(0);
-/* =========================
-   MOSTRAR PRODUCTOS
-   ========================= */
-function render() {
-    const container = document.getElementById("products");
+/* ==========================================
+   RENDER
+========================================== */
+function render(){
+    const container =
+        document.getElementById("products");
     container.innerHTML = "";
-    productos.forEach((p, i) => {
-        container.innerHTML += `
-        <div class="product">
-            <div class="left">
-                <img
-                    src="${p.img}"
-                    class="foto"
-                    onerror="this.style.display='none'"
-                >
-                <div class="info-prod">
-                    <div class="name">
-                        ${p.nombre}
-                    </div>
-                    <div class="price">
-                        $${p.precio.toLocaleString('es-AR')}
+    const categorias = [
+        "Quesos",
+        "Quesillos",
+        "Dulces",
+        "Salames"
+    ];
+    categorias.forEach(categoria => {
+        const productosCategoria =
+            productos
+            .map((p,i)=>({p,i}))
+            .filter(x=>x.p.categoria === categoria);
+        if(productosCategoria.length === 0){
+            return;
+        }
+        let html = `
+        <div class="categoria">
+            <div class="titulo-categoria">
+                ${categoria}
+            </div>
+        `;
+        productosCategoria.forEach(({p,i}) => {
+            html += `
+            <div class="product">
+                <div class="left">
+                    <img
+                        src="${p.img}"
+                        class="foto"
+                        onerror="this.style.display='none'"
+                    >
+                    <div class="info-prod">
+                        <div class="name">
+                            ${p.nombre}
+                        </div>
+                        <div class="price">
+                            $${p.precio.toLocaleString('es-AR')}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="controls">
-                <button
-                    class="btn-qty"
-                    onclick="cambiar(${i},-1)"
-                >
-                    -
-                </button>
-                <div class="cantidad">
-                    ${carrito[i]}
+                <div class="controls">
+                    <button
+                        class="btn-qty"
+                        onclick="cambiar(${i},-1)"
+                    >
+                        -
+                    </button>
+                    <div class="cantidad">
+                        ${carrito[i]}
+                    </div>
+                    <button
+                        class="btn-qty"
+                        onclick="cambiar(${i},1)"
+                    >
+                        +
+                    </button>
+                    <button
+                        class="btn-qty"
+                        style="margin-left:5px;background:#444"
+                        onclick="cambiar(${i},10)"
+                    >
+                        +10
+                    </button>
                 </div>
-                <button
-                    class="btn-qty"
-                    onclick="cambiar(${i},1)"
-                >
-                    +
-                </button>
-                <button
-                    class="btn-qty"
-                    style="margin-left:5px; background:#444"
-                    onclick="cambiar(${i},10)"
-                >
-                    +10
-                </button>
             </div>
-        </div>`;
+            `;
+        });
+        html += `</div>`;
+        container.innerHTML += html;
     });
 }
-/* =========================
+/* ==========================================
    CAMBIAR CANTIDAD
-   ========================= */
-function cambiar(i, q) {
+========================================== */
+function cambiar(i,q){
     carrito[i] += q;
-    if (carrito[i] < 0) {
+    if(carrito[i] < 0){
         carrito[i] = 0;
     }
     actualizarTotal();
     render();
 }
-/* =========================
-   CALCULAR TOTAL
-   ========================= */
-function actualizarTotal() {
+/* ==========================================
+   TOTAL
+========================================== */
+function actualizarTotal(){
     let t = 0;
-    productos.forEach((p, i) => {
+    productos.forEach((p,i)=>{
         t += p.precio * carrito[i];
     });
     document.getElementById("total").innerText =
         t.toLocaleString('es-AR');
 }
-/* =========================
+/* ==========================================
    WHATSAPP
-   ========================= */
-function enviarPedido() {
-    if (!carrito.some(c => c > 0)) {
+========================================== */
+function enviarPedido(){
+    if(!carrito.some(c=>c>0)){
         return alert("Agrega al menos un producto");
     }
     let nombre =
-        document.getElementById("nombre").value || "Cliente";
+        document.getElementById("nombre").value ||
+        "Cliente";
     let m =
         `🧀 *PEDIDO - LA FÁBRICA*\n` +
         `👤 Cliente: ${nombre}\n` +
         `--------------------------\n`;
-    productos.forEach((p, i) => {
-        if (carrito[i] > 0) {
+    const categorias = [
+        "Quesos",
+        "Quesillos",
+        "Dulces",
+        "Salames"
+    ];
+    categorias.forEach(categoria=>{
+        const seleccionados =
+            productos
+            .map((p,i)=>({p,i}))
+            .filter(x =>
+                x.p.categoria === categoria &&
+                carrito[x.i] > 0
+            );
+        if(seleccionados.length === 0){
+            return;
+        }
+        m += `\n*${categoria.toUpperCase()}*\n`;
+        seleccionados.forEach(({p,i})=>{
             m +=
                 `• ${p.nombre} x${carrito[i]} ` +
-                `($${(p.precio * carrito[i]).toLocaleString('es-AR')})\n`;
-        }
+                `($${(p.precio*carrito[i]).toLocaleString('es-AR')})\n`;
+        });
     });
     m +=
         `\n💰 *Total: $${document.getElementById("total").innerText}*`;
     let d =
         document.getElementById("detalle").value;
-    if (d) {
+    if(d){
         m += `\n\n📝 Nota: ${d}`;
     }
     window.open(
@@ -397,58 +587,74 @@ function enviarPedido() {
         encodeURIComponent(m)
     );
 }
-/* =========================
-   IMPRIMIR TICKET
-   ========================= */
-function imprimirPedido() {
-    if (!carrito.some(c => c > 0)) {
+/* ==========================================
+   IMPRIMIR
+========================================== */
+function imprimirPedido(){
+    if(!carrito.some(c=>c>0)){
         return alert("No hay productos seleccionados");
     }
     let nombre =
-        document.getElementById("nombre").value || "CLIENTE";
+        document.getElementById("nombre").value ||
+        "CLIENTE";
     let detalle =
         document.getElementById("detalle").value;
     let fecha =
         new Date().toLocaleString('es-AR');
     let total =
         document.getElementById("total").innerText;
-    /* CABECERA */
     let ticketHtml = `
         <div style="text-align:center;">
             <h2>LA FÁBRICA</h2>
             <p>Artesanales de Calidad</p>
             <p>--------------------------------</p>
-            <p>
-                FECHA: ${fecha}
-            </p>
-            <p>
-                CLIENTE: ${nombre}
-            </p>
+            <p>FECHA: ${fecha}</p>
+            <p>CLIENTE: ${nombre}</p>
             <p>--------------------------------</p>
         </div>
-        <table>
     `;
-    /* PRODUCTOS */
-    productos.forEach((p, i) => {
-        if (carrito[i] > 0) {
-            let subtotal =
+    const categorias = [
+        "Quesos",
+        "Quesillos",
+        "Dulces",
+        "Salames"
+    ];
+    categorias.forEach(categoria=>{
+        const seleccionados =
+            productos
+            .map((p,i)=>({p,i}))
+            .filter(x =>
+                x.p.categoria === categoria &&
+                carrito[x.i] > 0
+            );
+        if(seleccionados.length === 0){
+            return;
+        }
+        ticketHtml += `
+            <div class="categoria-ticket">
+                ${categoria.toUpperCase()}
+            </div>
+            <table>
+        `;
+        seleccionados.forEach(({p,i})=>{
+            const subtotal =
                 p.precio * carrito[i];
             ticketHtml += `
                 <tr>
                     <td>
                         ${p.nombre}<br>
-                        ${carrito[i]} x $${p.precio.toLocaleString('es-AR')}
+                        ${carrito[i]} x
+                        $${p.precio.toLocaleString('es-AR')}
                     </td>
                     <td>
                         $${subtotal.toLocaleString('es-AR')}
                     </td>
                 </tr>
             `;
-        }
+        });
+        ticketHtml += `</table>`;
     });
-    /* TOTAL */
     ticketHtml += `
-        </table>
         <div style="text-align:center;">
             <p>--------------------------------</p>
             <h3>

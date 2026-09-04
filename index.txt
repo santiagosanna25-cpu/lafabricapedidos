@@ -309,7 +309,7 @@ const productos = [
     ===================================== */
     {
         nombre:"Criollitos",
-        precio:4500,
+        precio:4600,
         img:"criollitos.jpg",
         categoria:"Quesos"
     },
@@ -423,7 +423,7 @@ const productos = [
     },
     {
         nombre:"Higos en almíbar",
-        precio:3800,
+        precio:4000,
         img:"higos.jpg",
         categoria:"Dulces"
     },
@@ -432,7 +432,7 @@ const productos = [
     ===================================== */
     {
         nombre:"Mini mortadela",
-        precio:6600,
+        precio:6800,
         img:"mortadela.jpg",
         categoria:"Salames"
     },

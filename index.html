@@ -171,6 +171,95 @@ header img{
     background:#4a90e2;
     color:white;
 }
+/* TICKET */
+#print-container{
+    display:none;
+}
+/* =========================================
+   IMPRESION TICKET TERMICO 80 MM
+========================================= */
+@media print{
+    @page{
+        size:80mm auto;
+        margin:0;
+    }
+    html,
+    body{
+        width:80mm;
+        min-width:80mm;
+        margin:0!important;
+        padding:0!important;
+        background:white!important;
+    }
+    body *{
+        visibility:hidden;
+    }
+    #print-container,
+    #print-container *{
+        visibility:visible;
+    }
+    #print-container{
+        position:absolute;
+        left:0;
+        top:0;
+        width:80mm;
+        margin:0;
+        padding:3mm;
+        display:block!important;
+        color:black!important;
+        background:white!important;
+        font-family:monospace;
+        font-size:12px;
+        line-height:1.25;
+        overflow:visible;
+    }
+    #print-container > div{
+        width:100%;
+    }
+    #print-container h2{
+        font-size:20px;
+        margin:0 0 3px 0;
+    }
+    #print-container h3{
+        font-size:16px;
+        margin:5px 0;
+    }
+    #print-container p{
+        margin:2px 0;
+    }
+    #print-container table{
+        width:100%;
+        border-collapse:collapse;
+        table-layout:fixed;
+    }
+    #print-container td{
+        padding:2px 0;
+        vertical-align:top;
+        word-wrap:break-word;
+    }
+    #print-container td:first-child{
+        width:70%;
+        text-align:left;
+        padding-right:5px;
+    }
+    #print-container td:last-child{
+        width:30%;
+        text-align:right;
+        white-space:nowrap;
+    }
+    #print-container .categoria-ticket{
+        margin-top:8px;
+        margin-bottom:3px;
+        font-weight:bold;
+        font-size:13px;
+        border-bottom:1px dashed black;
+        padding-bottom:2px;
+    }
+    #print-container tr{
+        break-inside:avoid;
+        page-break-inside:avoid;
+    }
+}
 </style>
 </head>
 <body>
@@ -197,9 +286,9 @@ Total: $<span id="total">0</span>
 <div class="botones-footer">
 <button
 class="imprimir"
-onclick="imprimirPedido()"
+onclick="enviarEImprimirPedido()"
 >
-🖨️ Ticket
+🖨️ Enviar e imprimir
 </button>
 <button
 class="whatsapp"
@@ -209,68 +298,244 @@ onclick="enviarPedido()"
 </button>
 </div>
 </div>
+<div id="print-container"></div>
 <script>
 /* ==========================================
    PRODUCTOS
 ========================================== */
+
+/* ==========================================
+   CONFIGURACIÓN DE PEDIDOS AUTOMÁTICOS
+   Pegá acá la URL de tu Web App de Google Apps Script.
+   ========================================== */
+const PEDIDOS_API = "PEGAR_AQUI_URL_DEL_WEB_APP";
+
 const productos = [
-    { nombre:"Criollitos", precio:4600, img:"criollitos.jpg", categoria:"Quesos" },
-    { nombre:"Criollitos al vacío", precio:4900, img:"vacio.jpg", categoria:"Quesos" },
-    { nombre:"Queso criollo", precio:8000, img:"criollo.jpg", categoria:"Quesos" },
-    { nombre:"Criollo grande", precio:8500, img:"grande.jpg", categoria:"Quesos" },
-    { nombre:"Criollos medianos", precio:5500, img:"criollos.jpg", categoria:"Quesos" },
-    { nombre:"Queso cáscara roja", precio:8200, img:"cascararoja.jpg", categoria:"Quesos" },
-    { nombre:"Holanda", precio:8200, img:"holanda.jpg", categoria:"Quesos" },
-    { nombre:"Queso semiduro", precio:8500, img:"semiduro.jpg", categoria:"Quesos" },
-    { nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg", categoria:"Quesos" },
-    { nombre:"Quesillo tradicional", precio:3500, img:"quesillo.jpg", categoria:"Quesillos" },
-    { nombre:"Quesillos postre", precio:19000, img:"Quesillos postre.jpg", categoria:"Quesillos" },
-    { nombre:"Caciocavallo", precio:9000, img:"caciocavallo.jpg", categoria:"Quesillos" },
-    { nombre:"Provoleta", precio:5000, img:"provoleta.jpg", categoria:"Quesillos" },
-    { nombre:"Quesillos x10", precio:18000, img:"quesillos10.jpg", categoria:"Quesillos" },
-    { nombre:"Rollitos de quesillo", precio:2100, img:"rollitos.jpg", categoria:"Quesillos" },
-    { nombre:"Rollitos x5", precio:10500, img:"rollitos5.jpg", categoria:"Quesillos" },
-    { nombre:"Dulce de leche", precio:4000, img:"dulce.jpg", categoria:"Dulces" },
-    { nombre:"Dulce de chayote", precio:4000, img:"chayote.jpg", categoria:"Dulces" },
-    { nombre:"Higos en almíbar", precio:4000, img:"higos.jpg", categoria:"Dulces" },
-    { nombre:"Mini mortadela", precio:6800, img:"mortadela.jpg", categoria:"Salames" },
-    { nombre:"Chacarero bastón", precio:7200, img:"chacarero.jpg", categoria:"Salames" },
-    { nombre:"Salamines picado fino", precio:4200, img:"salamin.jpg", categoria:"Salames" },
-    { nombre:"Salame criollo bastón", precio:7200, img:"salame.jpg", categoria:"Salames" }
+    /* =====================================
+       QUESOS
+    ===================================== */
+    {
+        nombre:"Criollitos",
+        precio:4600,
+        img:"criollitos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollitos al vacío",
+        precio:4900,
+        img:"vacio.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo",
+        precio:8000,
+        img:"criollo.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollo grande",
+        precio:8500,
+        img:"grande.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollos medianos",
+        precio:5500,
+        img:"criollos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso cáscara roja",
+        precio:8200,
+        img:"cascararoja.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Holanda",
+        precio:8200,
+        img:"holanda.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso semiduro",
+        precio:8500,
+        img:"semiduro.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo en barra",
+        precio:10000,
+        img:"barra.jpg",
+        categoria:"Quesos"
+    },
+    /* =====================================
+       QUESILLOS
+    ===================================== */
+    {
+        nombre:"Quesillo tradicional",
+        precio:3500,
+        img:"quesillo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Quesillos postre",
+        precio:19000,
+        img:"Quesillos postre.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Caciocavallo",
+        precio:9000,
+        img:"caciocavallo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Provoleta",
+        precio:5000,
+        img:"provoleta.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Quesillos x10",
+        precio:18000,
+        img:"quesillos10.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos de quesillo",
+        precio:2100,
+        img:"rollitos.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos x5",
+        precio:10500,
+        img:"rollitos5.jpg",
+        categoria:"Quesillos"
+    },
+    /* =====================================
+       DULCES
+    ===================================== */
+    {
+        nombre:"Dulce de leche",
+        precio:4000,
+        img:"dulce.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Dulce de chayote",
+        precio:4000,
+        img:"chayote.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Higos en almíbar",
+        precio:4000,
+        img:"higos.jpg",
+        categoria:"Dulces"
+    },
+    /* =====================================
+       SALAMES
+    ===================================== */
+    {
+        nombre:"Mini mortadela",
+        precio:6800,
+        img:"mortadela.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Chacarero bastón",
+        precio:7200,
+        img:"chacarero.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salamines picado fino",
+        precio:4200,
+        img:"salamin.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salame criollo bastón",
+        precio:7200,
+        img:"salame.jpg",
+        categoria:"Salames"
+    }
 ];
 let carrito = Array(productos.length).fill(0);
-
-const categorias = ["Quesos", "Quesillos", "Dulces", "Salames"];
-
+/* ==========================================
+   CATEGORIAS
+========================================== */
+const categorias = [
+    "Quesos",
+    "Quesillos",
+    "Dulces",
+    "Salames"
+];
+/* ==========================================
+   MOSTRAR PRODUCTOS
+========================================== */
 function render(){
-    const container = document.getElementById("products");
+    const container =
+        document.getElementById("products");
     container.innerHTML = "";
     categorias.forEach(categoria => {
-        const productosCategoria = productos
+        const productosCategoria =
+            productos
             .map((p,i)=>({p,i}))
-            .filter(x => x.p.categoria === categoria);
-
-        if(productosCategoria.length === 0) return;
-
+            .filter(x =>
+                x.p.categoria === categoria
+            );
+        if(productosCategoria.length === 0){
+            return;
+        }
         let html = `
         <div class="categoria">
-            <div class="titulo-categoria">${categoria}</div>
+            <div class="titulo-categoria">
+                ${categoria}
+            </div>
         `;
         productosCategoria.forEach(({p,i}) => {
             html += `
             <div class="product">
                 <div class="left">
-                    <img src="${p.img}" class="foto" onerror="this.style.display='none'">
+                    <img
+                        src="${p.img}"
+                        class="foto"
+                        onerror="this.style.display='none'"
+                    >
                     <div class="info-prod">
-                        <div class="name">${p.nombre}</div>
-                        <div class="price">$${p.precio.toLocaleString('es-AR')}</div>
+                        <div class="name">
+                            ${p.nombre}
+                        </div>
+                        <div class="price">
+                            $${p.precio.toLocaleString('es-AR')}
+                        </div>
                     </div>
                 </div>
                 <div class="controls">
-                    <button class="btn-qty" onclick="cambiar(${i},-1)">-</button>
-                    <div class="cantidad">${carrito[i]}</div>
-                    <button class="btn-qty" onclick="cambiar(${i},1)">+</button>
-                    <button class="btn-qty" style="margin-left:5px;background:#444" onclick="cambiar(${i},10)">+10</button>
+                    <button
+                        class="btn-qty"
+                        onclick="cambiar(${i},-1)"
+                    >
+                        -
+                    </button>
+                    <div class="cantidad">
+                        ${carrito[i]}
+                    </div>
+                    <button
+                        class="btn-qty"
+                        onclick="cambiar(${i},1)"
+                    >
+                        +
+                    </button>
+                    <button
+                        class="btn-qty"
+                        style="margin-left:5px;background:#444"
+                        onclick="cambiar(${i},10)"
+                    >
+                        +10
+                    </button>
                 </div>
             </div>
             `;
@@ -279,87 +544,146 @@ function render(){
         container.innerHTML += html;
     });
 }
-
+/* ==========================================
+   CAMBIAR CANTIDAD
+========================================== */
 function cambiar(i,q){
     carrito[i] += q;
-    if(carrito[i] < 0) carrito[i] = 0;
+    if(carrito[i] < 0){
+        carrito[i] = 0;
+    }
     actualizarTotal();
     render();
 }
-
+/* ==========================================
+   TOTAL
+========================================== */
 function actualizarTotal(){
     let t = 0;
-    productos.forEach((p,i)=>{ t += p.precio * carrito[i]; });
-    document.getElementById("total").innerText = t.toLocaleString('es-AR');
+    productos.forEach((p,i)=>{
+        t += p.precio * carrito[i];
+    });
+    document.getElementById("total").innerText =
+        t.toLocaleString('es-AR');
 }
-
+/* ==========================================
+   WHATSAPP
+========================================== */
 function enviarPedido(){
-    if(!carrito.some(c=>c>0)) return alert("Agrega al menos un producto");
-    let nombre = document.getElementById("nombre").value || "Cliente";
-    let m = `🧀 *PEDIDO - LA FÁBRICA*\n👤 Cliente: ${nombre}\n--------------------------\n`;
+    if(!carrito.some(c=>c>0)){
+        return alert("Agrega al menos un producto");
+    }
+    let nombre =
+        document.getElementById("nombre").value ||
+        "Cliente";
+    let m =
+        `🧀 *PEDIDO - LA FÁBRICA*\n` +
+        `👤 Cliente: ${nombre}\n` +
+        `--------------------------\n`;
     categorias.forEach(categoria=>{
-        const seleccionados = productos
+        const seleccionados =
+            productos
             .map((p,i)=>({p,i}))
-            .filter(x => x.p.categoria === categoria && carrito[x.i] > 0);
-        if(seleccionados.length === 0) return;
+            .filter(x =>
+                x.p.categoria === categoria &&
+                carrito[x.i] > 0
+            );
+        if(seleccionados.length === 0){
+            return;
+        }
         m += `\n*${categoria.toUpperCase()}*\n`;
         seleccionados.forEach(({p,i})=>{
-            m += `• ${p.nombre} x${carrito[i]} ($${(p.precio*carrito[i]).toLocaleString('es-AR')})\n`;
+            m +=
+                `• ${p.nombre} x${carrito[i]} ` +
+                `($${(p.precio*carrito[i]).toLocaleString('es-AR')})\n`;
         });
     });
-    m += `\n💰 *Total: $${document.getElementById("total").innerText}*`;
-    let d = document.getElementById("detalle").value;
-    if(d) m += `\n\n📝 Nota: ${d}`;
-    window.open("https://wa.me/5493816062471?text=" + encodeURIComponent(m));
+    m +=
+        `\n💰 *Total: $${document.getElementById("total").innerText}*`;
+    let d =
+        document.getElementById("detalle").value;
+    if(d){
+        m += `\n\n📝 Nota: ${d}`;
+    }
+    window.open(
+        "https://wa.me/5493816062471?text=" +
+        encodeURIComponent(m)
+    );
 }
 
 /* ==========================================
-   IMPRIMIR EN POS-80 DESDE IPHONE
+   ENVIAR PEDIDO AL SISTEMA DE IMPRESIÓN
 ========================================== */
-async function imprimirPedido(){
+async function enviarEImprimirPedido(){
     if(!carrito.some(c=>c>0)){
         return alert("No hay productos seleccionados");
     }
 
-    const IP_NOTEBOOK = "192.168.1.236";
+    if(PEDIDOS_API.includes("PEGAR_AQUI")){
+        return alert("Falta configurar el servidor de pedidos en la página.");
+    }
 
-    let nombre = document.getElementById("nombre").value || "CLIENTE";
-    let detalle = document.getElementById("detalle").value;
-    let fecha = new Date().toLocaleString('es-AR');
-    let total = document.getElementById("total").innerText;
+    const nombre = document.getElementById("nombre").value.trim() || "CLIENTE";
+    const detalle = document.getElementById("detalle").value.trim();
 
+    const items = productos
+        .map((p,i)=>({nombre:p.nombre, precio:p.precio, cantidad:carrito[i], categoria:p.categoria}))
+        .filter(x=>x.cantidad > 0);
+
+    const total = items.reduce((s,x)=>s + x.precio * x.cantidad, 0);
+
+    const params = new URLSearchParams({
+        accion: "crear",
+        cliente: nombre,
+        detalle: detalle,
+        total: String(total),
+        items: JSON.stringify(items)
+    });
+
+    try{
+        const r = await fetch(PEDIDOS_API + "?" + params.toString(), {
+            method: "GET",
+            cache: "no-store"
+        });
+
+        const data = await r.json();
+
+        if(!data.ok){
+            throw new Error(data.error || "No se pudo registrar el pedido");
+        }
+
+        alert(`✅ Pedido #${data.numero} recibido.\n\nSe enviará automáticamente a la impresora.`);
+
+        carrito = Array(productos.length).fill(0);
+        document.getElementById("nombre").value = "";
+        document.getElementById("detalle").value = "";
+        actualizarTotal();
+        render();
+
+    }catch(error){
+        console.error(error);
+        alert("❌ No se pudo enviar el pedido.\n\nRevisá la conexión a internet o la configuración del sistema.");
+    }
+}
+
+/* ==========================================
+   IMPRIMIR TICKET
+========================================== */
+function imprimirPedido(){
+    if(!carrito.some(c=>c>0)){
+        return alert("No hay productos seleccionados");
+    }
+    let nombre =
+        document.getElementById("nombre").value ||
+        "CLIENTE";
+    let detalle =
+        document.getElementById("detalle").value;
+    let fecha =
+        new Date().toLocaleString('es-AR');
+    let total =
+        document.getElementById("total").innerText;
     let ticketHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <style>
-            @page { margin: 0; }
-            body {
-                width: 72mm;
-                font-family: monospace;
-                font-size: 12px;
-                margin: 0 auto;
-                padding: 2mm;
-                color: black;
-                background: white;
-            }
-            h2 { font-size: 18px; margin: 0; text-align: center; }
-            p { margin: 2px 0; }
-            table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-            td { padding: 2px 0; vertical-align: top; }
-            td:first-child { text-align: left; }
-            td:last-child { text-align: right; }
-            .categoria-ticket {
-                margin-top: 8px;
-                font-weight: bold;
-                border-bottom: 1px dashed black;
-            }
-            .center { text-align: center; }
-        </style>
-    </head>
-    <body>
-        <div class="center">
+        <div style="text-align:center;">
             <h2>LA FÁBRICA</h2>
             <p>Artesanales de Calidad</p>
             <p>--------------------------------</p>
@@ -368,65 +692,67 @@ async function imprimirPedido(){
             <p>--------------------------------</p>
         </div>
     `;
-
-    categorias.forEach(categoria => {
-        const seleccionados = productos
-            .map((p,i) => ({p,i}))
-            .filter(x => x.p.categoria === categoria && carrito[x.i] > 0);
-            
-        if(seleccionados.length === 0) return;
-
-        ticketHtml += `<div class="categoria-ticket">${categoria.toUpperCase()}</div><table>`;
-        
-        seleccionados.forEach(({p,i}) => {
-            const subtotal = p.precio * carrito[i];
+    /* PRODUCTOS AGRUPADOS POR CATEGORIA */
+    categorias.forEach(categoria=>{
+        const seleccionados =
+            productos
+            .map((p,i)=>({p,i}))
+            .filter(x =>
+                x.p.categoria === categoria &&
+                carrito[x.i] > 0
+            );
+        if(seleccionados.length === 0){
+            return;
+        }
+        ticketHtml += `
+            <div class="categoria-ticket">
+                ${categoria.toUpperCase()}
+            </div>
+            <table>
+        `;
+        seleccionados.forEach(({p,i})=>{
+            const subtotal =
+                p.precio * carrito[i];
             ticketHtml += `
                 <tr>
-                    <td>${p.nombre}<br>${carrito[i]} x $${p.precio.toLocaleString('es-AR')}</td>
-                    <td>$${subtotal.toLocaleString('es-AR')}</td>
+                    <td>
+                        ${p.nombre}<br>
+                        ${carrito[i]} x
+                        $${p.precio.toLocaleString('es-AR')}
+                    </td>
+                    <td>
+                        $${subtotal.toLocaleString('es-AR')}
+                    </td>
                 </tr>
             `;
         });
         ticketHtml += `</table>`;
     });
-
+    /* TOTAL */
     ticketHtml += `
-        <div class="center">
+        <div style="text-align:center;">
             <p>--------------------------------</p>
-            <h3>TOTAL: $${total}</h3>
+            <h3>
+                TOTAL: $${total}
+            </h3>
             <p>--------------------------------</p>
-            ${detalle ? `<p><strong>NOTA:</strong><br>${detalle}</p>` : ""}
-            <p style="margin-top:8px;">¡Muchas gracias por su compra!</p>
+            ${
+                detalle
+                ? `<p><strong>NOTA:</strong><br>${detalle}</p>`
+                : ""
+            }
+            <p style="margin-top:8px;">
+                ¡Muchas gracias por su compra!
+            </p>
         </div>
-    </body>
-    </html>
     `;
-
-    try {
-        await fetch(`http://${IP_NOTEBOOK}:3000/imprimir`, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({ html: ticketHtml })
-        });
-
-        alert("🖨️ Orden enviada a la impresora");
-    } catch (error) {
-        // Alternativa directa mediante AirPrint si la notebook está apagada o con fallas
-        let w = window.open('', '_blank');
-        if (w) {
-            w.document.write(ticketHtml);
-            w.document.close();
-            w.focus();
-            setTimeout(() => {
-                w.print();
-                w.close();
-            }, 250);
-        } else {
-            alert("❌ Error al conectar con la notebook. Revisa que 'node index.js' esté activo.");
-        }
-    }
+    document.getElementById("print-container").innerHTML =
+        ticketHtml;
+    window.print();
 }
-
+/* ==========================================
+   INICIAR
+========================================== */
 render();
 </script>
 </body>

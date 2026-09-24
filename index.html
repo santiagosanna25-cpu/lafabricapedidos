@@ -334,13 +334,15 @@ async function imprimirPedido(){
     <head>
         <meta charset="UTF-8">
         <style>
+            @page { margin: 0; }
             body {
                 width: 72mm;
                 font-family: monospace;
                 font-size: 12px;
-                margin: 0;
+                margin: 0 auto;
                 padding: 2mm;
                 color: black;
+                background: white;
             }
             h2 { font-size: 18px; margin: 0; text-align: center; }
             p { margin: 2px 0; }
@@ -404,13 +406,24 @@ async function imprimirPedido(){
         await fetch(`http://${IP_NOTEBOOK}:3000/imprimir`, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ html: ticketHtml })
         });
 
         alert("🖨️ Orden enviada a la impresora");
     } catch (error) {
-        alert("❌ Error de conexión. Revisa que 'node index.js' esté activo en la notebook y estén en el mismo Wi-Fi.");
+        // Alternativa directa mediante AirPrint si la notebook está apagada o con fallas
+        let w = window.open('', '_blank');
+        if (w) {
+            w.document.write(ticketHtml);
+            w.document.close();
+            w.focus();
+            setTimeout(() => {
+                w.print();
+                w.close();
+            }, 250);
+        } else {
+            alert("❌ Error al conectar con la notebook. Revisa que 'node index.js' esté activo.");
+        }
     }
 }
 

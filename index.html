@@ -401,20 +401,16 @@ async function imprimirPedido(){
     `;
 
     try {
-        const response = await fetch(`http://${IP_NOTEBOOK}:3000/imprimir`, {
+        await fetch(`http://${IP_NOTEBOOK}:3000/imprimir`, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ html: ticketHtml })
         });
 
-        const res = await response.json();
-        if(res.status === 'ok') {
-            alert("✅ Ticket impreso en POS-80");
-        } else {
-            alert("❌ Error en impresora: " + res.message);
-        }
+        alert("🖨️ Orden enviada a la impresora");
     } catch (error) {
-        alert("❌ No se conectó con la notebook. Revisa que esté ejecutándose 'node index.js' y que el iPhone esté en la misma red Wi-Fi.");
+        alert("❌ Error de conexión. Revisa que 'node index.js' esté activo en la notebook y estén en el mismo Wi-Fi.");
     }
 }
 

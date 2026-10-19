@@ -7,29 +7,29 @@
 <title>La Fábrica · Artesanales</title>
 <style>
 :root{
-    --bg:#0b0d0e;
-    --surface:#15191a;
-    --surface-2:#1c2122;
-    --border:rgba(255,255,255,.08);
-    --text:#f6f7f7;
-    --muted:#a7adad;
-    --accent:#d8a64b;
-    --accent-2:#f0c56b;
-    --green:#24c96b;
-    --danger:#e95f62;
-    --shadow:0 18px 45px rgba(0,0,0,.30);
+    --bg:#0b0d0e;
+    --surface:#15191a;
+    --surface-2:#1c2122;
+    --border:rgba(255,255,255,.08);
+    --text:#f6f7f7;
+    --muted:#a7adad;
+    --accent:#d8a64b;
+    --accent-2:#f0c56b;
+    --green:#24c96b;
+    --danger:#e95f62;
+    --shadow:0 18px 45px rgba(0,0,0,.30);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-    min-height:100vh;
-    background:
-      radial-gradient(circle at 15% -5%, rgba(216,166,75,.11), transparent 35%),
-      radial-gradient(circle at 100% 10%, rgba(255,255,255,.04), transparent 24%),
-      var(--bg);
-    color:var(--text);
-    font-family:Inter,Segoe UI,Arial,sans-serif;
-    touch-action:manipulation;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% -5%, rgba(216,166,75,.11), transparent 35%),
+      radial-gradient(circle at 100% 10%, rgba(255,255,255,.04), transparent 24%),
+      var(--bg);
+    color:var(--text);
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    touch-action:manipulation;
 }
 button,input,textarea{font:inherit}
 button{cursor:pointer}
@@ -37,127 +37,112 @@ img{max-width:100%;display:block}
 
 /* HERO */
 .hero{
-    position:relative;
-    height:210px;
-    overflow:hidden;
-    border-bottom:1px solid var(--border);
+    position:relative;
+    height:210px;
+    overflow:hidden;
+    border-bottom:1px solid var(--border);
 }
 .hero img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    filter:saturate(.92) contrast(1.03);
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:saturate(.92) contrast(1.03);
 }
 .hero::after{
-    content:"";
-    position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.78));
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.78));
 }
 .hero-content{
-    position:absolute;z-index:2;left:18px;right:18px;bottom:20px;
-    display:flex;align-items:flex-end;justify-content:space-between;gap:15px;
+    position:absolute;z-index:2;left:18px;right:18px;bottom:20px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:15px;
 }
 .brand h1{font-size:30px;letter-spacing:-.7px}
 .brand p{margin-top:5px;color:#e7e1d3;font-size:13px}
 .brand-badge{
-    padding:8px 11px;border:1px solid rgba(255,255,255,.16);
-    border-radius:999px;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);
-    color:#fff;font-size:12px;white-space:nowrap;
-}
-
-/* APARTADO AL INICIO: SELECTOR DE PRECIOS */
-.price-mode-section{
-    max-width:1050px;
-    margin:14px auto 4px;
-    padding:0 14px;
-}
-.price-mode-box{
-    background:linear-gradient(180deg,rgba(216,166,75,.09),rgba(21,25,26,.95));
-    border:1px solid rgba(216,166,75,.28);
-    border-radius:16px;
-    padding:12px 14px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    box-shadow:0 8px 24px rgba(0,0,0,.2);
-}
-.price-mode-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-}
-.price-mode-title{
-    font-size:13px;
-    font-weight:800;
-    color:var(--accent-2);
-    letter-spacing:.3px;
-    text-transform:uppercase;
-}
-.price-mode-note{
-    font-size:11px;
-    color:var(--muted);
-}
-.price-mode-buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-}
-.mode-btn{
-    border:1px solid var(--border);
-    background:var(--surface);
-    color:var(--muted);
-    padding:11px 12px;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:800;
-    transition:all .18s ease;
-    text-align:center;
-}
-.mode-btn.active{
-    background:var(--accent);
-    color:#1b1307;
-    border-color:var(--accent-2);
-    box-shadow:0 4px 14px rgba(216,166,75,.25);
+    padding:8px 11px;border:1px solid rgba(255,255,255,.16);
+    border-radius:999px;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);
+    color:#fff;font-size:12px;white-space:nowrap;
 }
 
 /* TOP BAR */
 .topbar{
-    position:sticky;top:0;z-index:50;
-    background:rgba(11,13,14,.86);backdrop-filter:blur(16px);
-    border-bottom:1px solid var(--border);
-    padding:10px 14px;
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,13,14,.86);backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    padding:10px 14px;
 }
 .topbar-inner{max-width:1050px;margin:auto;display:flex;gap:10px;align-items:center}
 .search{
-    flex:1;position:relative;
+    flex:1;position:relative;
 }
 .search input{
-    width:100%;height:44px;padding:0 14px 0 42px;border-radius:13px;
-    border:1px solid var(--border);background:var(--surface);
-    color:var(--text);outline:none;
+    width:100%;height:44px;padding:0 14px 0 42px;border-radius:13px;
+    border:1px solid var(--border);background:var(--surface);
+    color:var(--text);outline:none;
 }
 .search span{position:absolute;left:14px;top:10px;font-size:19px;color:var(--muted)}
 .cart-top{
-    position:relative;display:flex;align-items:center;gap:8px;
-    border:1px solid var(--border);background:var(--surface);
-    color:var(--text);height:44px;padding:0 14px;border-radius:13px;font-weight:700;
+    position:relative;display:flex;align-items:center;gap:8px;
+    border:1px solid var(--border);background:var(--surface);
+    color:var(--text);height:44px;padding:0 14px;border-radius:13px;font-weight:700;
 }
 .cart-badge{
-    min-width:20px;height:20px;padding:0 5px;border-radius:999px;
-    background:var(--accent);color:#1a1206;font-size:11px;
-    display:flex;align-items:center;justify-content:center;
+    min-width:20px;height:20px;padding:0 5px;border-radius:999px;
+    background:var(--accent);color:#1a1206;font-size:11px;
+    display:flex;align-items:center;justify-content:center;
+}
+
+/* DIVISION AL INICIO: MODO DE PRECIOS */
+.modo-wrap{
+    max-width:1050px;
+    margin:12px auto 0;
+    padding:0 14px;
+}
+.modo-box{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.modo-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    text-align:center;
+}
+.modo-botones{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+.modo-btn{
+    height:40px;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+    color:var(--muted);
+    border-radius:10px;
+    font-size:13px;
+    font-weight:800;
+}
+.modo-btn.active{
+    background:var(--accent);
+    color:#1b1307;
+    border-color:var(--accent-2);
 }
 
 /* CATEGORY CHIPS */
 .categories{
-    max-width:1050px;margin:0 auto;padding:12px 14px 4px;
-    display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+    max-width:1050px;margin:0 auto;padding:12px 14px 4px;
+    display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
 }
 .categories::-webkit-scrollbar{display:none}
 .category-chip{
-    flex:none;border:1px solid var(--border);background:var(--surface);
-    color:var(--muted);padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700;
+    flex:none;border:1px solid var(--border);background:var(--surface);
+    color:var(--muted);padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700;
 }
 .category-chip.active{background:rgba(216,166,75,.14);color:var(--accent-2);border-color:rgba(216,166,75,.32)}
 
@@ -165,18 +150,18 @@ img{max-width:100%;display:block}
 .container{max-width:1050px;margin:auto;padding:10px 14px 130px}
 .categoria{margin:14px 0 22px}
 .titulo-categoria{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:10px;padding:4px 2px;
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:10px;padding:4px 2px;
 }
 .titulo-categoria h2{font-size:22px;letter-spacing:-.3px}
 .cantidad-cat{color:var(--muted);font-size:12px}
 
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .product{
-    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01)),var(--surface);
-    border:1px solid var(--border);
-    border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15);
-    transition:transform .18s ease,border-color .18s ease;
+    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01)),var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15);
+    transition:transform .18s ease,border-color .18s ease;
 }
 .product:active{transform:scale(.992)}
 .product-media{position:relative;aspect-ratio:1/.82;background:#202526;overflow:hidden}
@@ -187,18 +172,18 @@ img{max-width:100%;display:block}
 .price{margin-top:5px;font-size:16px;font-weight:800;color:var(--accent-2)}
 .product-actions{display:flex;align-items:center;gap:6px;margin-top:11px}
 .qty-btn{
-    width:38px;height:38px;border:1px solid var(--border);border-radius:11px;
-    background:var(--surface-2);color:#fff;font-size:20px;font-weight:700;
+    width:38px;height:38px;border:1px solid var(--border);border-radius:11px;
+    background:var(--surface-2);color:#fff;font-size:20px;font-weight:700;
 }
 .qty-btn:active{transform:scale(.94)}
 .qty-num{min-width:28px;text-align:center;font-weight:800}
 .add-btn{
-    flex:1;height:38px;border:0;border-radius:11px;background:var(--accent);
-    color:#1b1307;font-weight:800;
+    flex:1;height:38px;border:0;border-radius:11px;background:var(--accent);
+    color:#1b1307;font-weight:800;
 }
 .plus10{
-    width:47px;height:38px;border:1px solid rgba(216,166,75,.25);border-radius:11px;
-    background:rgba(216,166,75,.08);color:var(--accent-2);font-size:11px;font-weight:800;
+    width:47px;height:38px;border:1px solid rgba(216,166,75,.25);border-radius:11px;
+    background:rgba(216,166,75,.08);color:var(--accent-2);font-size:11px;font-weight:800;
 }
 
 /* EMPTY */
@@ -207,55 +192,55 @@ img{max-width:100%;display:block}
 
 /* BOTTOM CART BAR */
 .bottom-cart{
-    position:fixed;left:0;right:0;bottom:0;z-index:60;
-    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-    background:linear-gradient(180deg,rgba(11,13,14,.12),rgba(11,13,14,.96) 30%);
-    pointer-events:none;
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,rgba(11,13,14,.12),rgba(11,13,14,.96) 30%);
+    pointer-events:none;
 }
 .bottom-cart .bar{
-    max-width:1050px;margin:auto;pointer-events:auto;
-    display:flex;align-items:center;gap:10px;
-    background:rgba(21,25,26,.96);border:1px solid var(--border);
-    backdrop-filter:blur(16px);padding:10px;border-radius:17px;box-shadow:var(--shadow);
+    max-width:1050px;margin:auto;pointer-events:auto;
+    display:flex;align-items:center;gap:10px;
+    background:rgba(21,25,26,.96);border:1px solid var(--border);
+    backdrop-filter:blur(16px);padding:10px;border-radius:17px;box-shadow:var(--shadow);
 }
 .cart-summary{flex:1;min-width:0}
 .cart-summary small{display:block;color:var(--muted);font-size:11px}
 .cart-summary strong{display:block;font-size:17px;margin-top:1px}
 .open-cart{
-    border:0;background:var(--accent);color:#1b1307;font-weight:850;
-    padding:12px 15px;border-radius:12px;white-space:nowrap;
+    border:0;background:var(--accent);color:#1b1307;font-weight:850;
+    padding:12px 15px;border-radius:12px;white-space:nowrap;
 }
 
 /* DRAWER */
 .drawer-backdrop{
-    position:fixed;inset:0;background:rgba(0,0,0,.62);
-    opacity:0;visibility:hidden;transition:.25s;z-index:90;
+    position:fixed;inset:0;background:rgba(0,0,0,.62);
+    opacity:0;visibility:hidden;transition:.25s;z-index:90;
 }
 .drawer{
-    position:fixed;z-index:100;right:0;top:0;bottom:0;width:min(470px,100%);
-    background:#101314;border-left:1px solid var(--border);
-    transform:translateX(100%);transition:transform .28s ease;
-    display:flex;flex-direction:column;
+    position:fixed;z-index:100;right:0;top:0;bottom:0;width:min(470px,100%);
+    background:#101314;border-left:1px solid var(--border);
+    transform:translateX(100%);transition:transform .28s ease;
+    display:flex;flex-direction:column;
 }
 .drawer.open{transform:translateX(0)}
 .drawer-backdrop.open{opacity:1;visibility:visible}
 .drawer-head{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:15px 16px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:15px 16px;border-bottom:1px solid var(--border);
 }
 .drawer-head h2{font-size:21px}
 .close-btn{width:40px;height:40px;border:1px solid var(--border);background:var(--surface);color:#fff;border-radius:12px;font-size:20px}
 .drawer-body{overflow:auto;padding:14px 16px 20px}
 .field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
 .field input,.field textarea{
-    width:100%;border:1px solid var(--border);background:var(--surface);
-    color:#fff;border-radius:12px;padding:12px 13px;outline:none;margin-bottom:11px;
+    width:100%;border:1px solid var(--border);background:var(--surface);
+    color:#fff;border-radius:12px;padding:12px 13px;outline:none;margin-bottom:11px;
 }
 .field textarea{resize:vertical;min-height:70px}
 .cart-list{display:flex;flex-direction:column;gap:8px;margin:4px 0 16px}
 .cart-item{
-    display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;
-    padding:9px;border:1px solid var(--border);background:var(--surface);border-radius:13px;
+    display:grid;grid-template-columns:54px 1fr auto;gap:10px;align-items:center;
+    padding:9px;border:1px solid var(--border);background:var(--surface);border-radius:13px;
 }
 .cart-item img{width:54px;height:54px;border-radius:10px;object-fit:cover;background:#252a2b}
 .cart-item-name{font-weight:750;font-size:13px;line-height:1.2}
@@ -275,137 +260,128 @@ img{max-width:100%;display:block}
 /* PRINT */
 #print-container{display:none}
 @media print{
-    @page{size:80mm auto;margin:0}
-    html,body{width:80mm;min-width:80mm;margin:0!important;padding:0!important;background:white!important}
-    body *{visibility:hidden}
-    #print-container,#print-container *{visibility:visible}
-    #print-container{
-        position:absolute;left:0;top:0;width:80mm;margin:0;padding:3mm;
-        display:block!important;color:#000!important;background:#fff!important;
-        font-family:monospace;font-size:12px;line-height:1.25;overflow:visible;
-    }
-    #print-container > div{width:100%}
-    #print-container h2{font-size:20px;margin:0 0 3px}
-    #print-container h3{font-size:16px;margin:5px 0}
-    #print-container p{margin:2px 0}
-    #print-container table{width:100%;border-collapse:collapse;table-layout:fixed}
-    #print-container td{padding:2px 0;vertical-align:top;word-wrap:break-word}
-    #print-container td:first-child{width:70%;text-align:left;padding-right:5px}
-    #print-container td:last-child{width:30%;text-align:right;white-space:nowrap}
-    #print-container .categoria-ticket{margin-top:8px;margin-bottom:3px;font-weight:bold;font-size:13px;border-bottom:1px dashed #000;padding-bottom:2px}
-    #print-container tr{break-inside:avoid;page-break-inside:avoid}
+    @page{size:80mm auto;margin:0}
+    html,body{width:80mm;min-width:80mm;margin:0!important;padding:0!important;background:white!important}
+    body *{visibility:hidden}
+    #print-container,#print-container *{visibility:visible}
+    #print-container{
+        position:absolute;left:0;top:0;width:80mm;margin:0;padding:3mm;
+        display:block!important;color:#000!important;background:#fff!important;
+        font-family:monospace;font-size:12px;line-height:1.25;overflow:visible;
+    }
+    #print-container > div{width:100%}
+    #print-container h2{font-size:20px;margin:0 0 3px}
+    #print-container h3{font-size:16px;margin:5px 0}
+    #print-container p{margin:2px 0}
+    #print-container table{width:100%;border-collapse:collapse;table-layout:fixed}
+    #print-container td{padding:2px 0;vertical-align:top;word-wrap:break-word}
+    #print-container td:first-child{width:70%;text-align:left;padding-right:5px}
+    #print-container td:last-child{width:30%;text-align:right;white-space:nowrap}
+    #print-container .categoria-ticket{margin-top:8px;margin-bottom:3px;font-weight:bold;font-size:13px;border-bottom:1px dashed #000;padding-bottom:2px}
+    #print-container tr{break-inside:avoid;page-break-inside:avoid}
 }
 @media (min-width:720px){
-    .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .hero{height:255px}
+    .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .hero{height:255px}
 }
 @media (min-width:1040px){
-    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media (max-width:460px){
-    .hero{height:190px}
-    .brand h1{font-size:27px}
-    .brand-badge{display:none}
-    .grid{gap:10px}
-    .product-info{padding:10px}
-    .name{font-size:14px}
-    .price{font-size:15px}
-    .qty-btn{width:34px}
-    .plus10{width:43px}
-    .price-mode-header{flex-direction:column;align-items:flex-start;gap:2px}
+    .hero{height:190px}
+    .brand h1{font-size:27px}
+    .brand-badge{display:none}
+    .grid{gap:10px}
+    .product-info{padding:10px}
+    .name{font-size:14px}
+    .price{font-size:15px}
+    .qty-btn{width:34px}
+    .plus10{width:43px}
 }
 </style>
 </head>
 <body>
 
 <section class="hero">
-    <img src="logo.png" alt="La Fábrica">
-    <div class="hero-content">
-        <div class="brand">
-            <h1>La Fábrica</h1>
-            <p>Artesanales de calidad · De Familia Sanna</p>
-        </div>
-        <div class="brand-badge">🧀 Pedidos online</div>
-    </div>
+    <img src="logo.png" alt="La Fábrica">
+    <div class="hero-content">
+        <div class="brand">
+            <h1>La Fábrica</h1>
+            <p>Artesanales de calidad · De Familia Sanna</p>
+        </div>
+        <div class="brand-badge">🧀 Pedidos online</div>
+    </div>
 </section>
 
-<!-- DIVISIÓN AL INICIO PARA CAMBIAR A VENTA AL PÚBLICO (+40%) -->
-<div class="price-mode-section" id="selector-precios">
-    <div class="price-mode-box">
-        <div class="price-mode-header">
-            <span class="price-mode-title">📋 Seleccionar lista de precios</span>
-            <span class="price-mode-note" id="nota-modo">Mostrando precios base</span>
-        </div>
-        <div class="price-mode-buttons">
-            <button type="button" class="mode-btn active" id="btn-mayorista" onclick="cambiarModoPrecio(false)">
-                🏪 Precio Base
-            </button>
-            <button type="button" class="mode-btn" id="btn-publico" onclick="cambiarModoPrecio(true)">
-                🛍️ Venta al Público (+40%)
-            </button>
-        </div>
-    </div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="search">
+      <span>⌕</span>
+      <input id="busqueda" type="search" placeholder="Buscar productos..." autocomplete="off">
+    </div>
+    <button class="cart-top" onclick="abrirCarrito()">🛒 <span class="cart-badge" id="cartCount">0</span></button>
+  </div>
 </div>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="search">
-      <span>⌕</span>
-      <input id="busqueda" type="search" placeholder="Buscar productos..." autocomplete="off">
-    </div>
-    <button class="cart-top" onclick="abrirCarrito()">🛒 <span class="cart-badge" id="cartCount">0</span></button>
-  </div>
+<div class="modo-wrap">
+    <div class="modo-box">
+        <div class="modo-label" id="modoTexto">LISTA ACTIVA: PRECIOS BASE</div>
+        <div class="modo-botones">
+            <button class="modo-btn active" id="btnBase" onclick="setModoPublico(false)">Precio Base</button>
+            <button class="modo-btn" id="btnPublico" onclick="setModoPublico(true)">Venta al Público (+40%)</button>
+        </div>
+    </div>
 </div>
 
 <div class="categories" id="categoryBar"></div>
 
 <main class="container" id="products"></main>
 <div class="empty" id="emptySearch">
-    <div class="emoji">🔎</div>
-    <div>No encontramos ese producto.</div>
+    <div class="emoji">🔎</div>
+    <div>No encontramos ese producto.</div>
 </div>
 
 <div class="bottom-cart">
-    <div class="bar">
-        <div class="cart-summary">
-            <small id="bottomItems">0 productos</small>
-            <strong>$<span id="total">0</span></strong>
-        </div>
-        <button class="open-cart" onclick="abrirCarrito()">Ver carrito →</button>
-    </div>
+    <div class="bar">
+        <div class="cart-summary">
+            <small id="bottomItems">0 productos</small>
+            <strong>$<span id="total">0</span></strong>
+        </div>
+        <button class="open-cart" onclick="abrirCarrito()">Ver carrito →</button>
+    </div>
 </div>
 
 <div class="drawer-backdrop" id="backdrop" onclick="cerrarCarrito()"></div>
 <aside class="drawer" id="drawer">
-    <div class="drawer-head">
-        <h2>🛒 Tu pedido</h2>
-        <button class="close-btn" onclick="cerrarCarrito()">×</button>
-    </div>
-    <div class="drawer-body">
-        <div class="field">
-            <label for="nombre">NOMBRE DEL CLIENTE</label>
-            <input id="nombre" type="text" placeholder="Ej: Juan Pérez">
-        </div>
-        <div class="field">
-            <label for="detalle">NOTAS DEL PEDIDO</label>
-            <textarea id="detalle" rows="2" placeholder="Ej: feteado, sin sal, retirar por el local..."></textarea>
-        </div>
+    <div class="drawer-head">
+        <h2>🛒 Tu pedido</h2>
+        <button class="close-btn" onclick="cerrarCarrito()">×</button>
+    </div>
+    <div class="drawer-body">
+        <div class="field">
+            <label for="nombre">NOMBRE DEL CLIENTE</label>
+            <input id="nombre" type="text" placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="field">
+            <label for="detalle">NOTAS DEL PEDIDO</label>
+            <textarea id="detalle" rows="2" placeholder="Ej: feteado, sin sal, retirar por el local..."></textarea>
+        </div>
 
-        <div id="cartList" class="cart-list"></div>
+        <div id="cartList" class="cart-list"></div>
 
-        <div class="cart-totals">
-            <div class="total-row">
-                <span>Total del pedido</span>
-                <strong>$<span id="drawerTotal">0</span></strong>
-            </div>
-        </div>
+        <div class="cart-totals">
+            <div class="total-row">
+                <span>Total del pedido</span>
+                <strong>$<span id="drawerTotal">0</span></strong>
+            </div>
+        </div>
 
-        <div class="drawer-actions">
-            <button class="action wa" onclick="enviarPedido()">📱 WhatsApp</button>
-            <button class="action print" onclick="enviarEImprimirPedido()">🖨️ Enviar e imprimir</button>
-        </div>
-        <button class="clear" onclick="vaciarCarrito()">Vaciar carrito</button>
-    </div>
+        <div class="drawer-actions">
+            <button class="action wa" onclick="enviarPedido()">📱 WhatsApp</button>
+            <button class="action print" onclick="enviarEImprimirPedido()">🖨️ Enviar e imprimir</button>
+        </div>
+        <button class="clear" onclick="vaciarCarrito()">Vaciar carrito</button>
+    </div>
 </aside>
 
 <div id="print-container"></div>
@@ -413,454 +389,431 @@ img{max-width:100%;display:block}
 <script>
 const PEDIDOS_API = "https://script.google.com/macros/s/AKfycbzGB3lp8TNXR6PSYMMW75XvoFtqhZVFG_gw2QPzXR2mlw3R_X0w2-fhtBKYCAIcNjmCiw/exec";
 
-/* CONFIGURACIÓN DE MODO PÚBLICO (+40%) Y REDONDEO PARA VUELTO */
-let modoPublico = false;
-const PORCENTAJE_PUBLICO = 1.40; // +40%
-const REDONDEO = 100; // Redondea a números enteros múltiplos de $100 para dar vuelto fácil (podés cambiarlo a 500 si preferís)
+let ventaPublico = false;
 
 const productos = [
-    /* =====================================
-       QUESOS
-    ===================================== */
-    {
-        nombre:"Criollitos",
-        precio:4800,
-        img:"criollitos.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollitos al vacío",
-        precio:5000,
-        img:"vacio.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso criollo",
-        precio:8300,
-        img:"criollo.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollo grande",
-        precio:8800,
-        img:"grande.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollos medianos",
-        precio:5800,
-        img:"criollos.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso cáscara roja",
-        precio:8500,
-        img:"cascararoja.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Holanda",
-        precio:8500,
-        img:"holanda.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso semiduro",
-        precio:9000,
-        img:"semiduro.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso criollo en barra",
-        precio:10000,
-        img:"barra.jpg",
-        categoria:"Quesos"
-    },
-    /* =====================================
-       QUESILLOS
-    ===================================== */
-    {
-        nombre:"Quesillo tradicional",
-        precio:3600,
-        img:"quesillo.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Quesillos postre",
-        precio:19000,
-        img:"Quesillos postre.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Caciocavallo",
-        precio:10000,
-        img:"caciocavallo.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Provoleta",
-        precio:5500,
-        img:"provoleta.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Quesillos x10",
-        precio:19000,
-        img:"quesillos10.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Rollitos de quesillo",
-        precio:2200,
-        img:"rollitos.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Rollitos x5",
-        precio:11000,
-        img:"rollitos5.jpg",
-        categoria:"Quesillos"
-    },
-    /* =====================================
-       DULCES
-    ===================================== */
-    {
-        nombre:"Dulce de leche",
-        precio:4500,
-        img:"dulce.jpg",
-        categoria:"Dulces"
-    },
-    {
-        nombre:"Dulce de chayote",
-        precio:4500,
-        img:"chayote.jpg",
-        categoria:"Dulces"
-    },
-    {
-        nombre:"Higos en almíbar",
-        precio:4500,
-        img:"higos.jpg",
-        categoria:"Dulces"
-    },
-    /* =====================================
-       SALAMES
-    ===================================== */
-    {
-        nombre:"Mini mortadela",
-        precio:6800,
-        img:"mortadela.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Chacarero bastón",
-        precio:7200,
-        img:"chacarero.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Salamines picado fino",
-        precio:4200,
-        img:"salamin.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Salame criollo bastón",
-        precio:7500,
-        img:"salame.jpg",
-        categoria:"Salames"
-    }
+    {
+        nombre:"Criollitos",
+        precio:4800,
+        img:"criollitos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollitos al vacío",
+        precio:5000,
+        img:"vacio.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo",
+        precio:8300,
+        img:"criollo.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollo grande",
+        precio:8800,
+        img:"grande.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Criollos medianos",
+        precio:5800,
+        img:"criollos.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso cáscara roja",
+        precio:8500,
+        img:"cascararoja.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Holanda",
+        precio:8500,
+        img:"holanda.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso semiduro",
+        precio:9000,
+        img:"semiduro.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Queso criollo en barra",
+        precio:10000,
+        img:"barra.jpg",
+        categoria:"Quesos"
+    },
+    {
+        nombre:"Quesillo tradicional",
+        precio:3600,
+        img:"quesillo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Quesillos postre",
+        precio:19000,
+        img:"Quesillos postre.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Caciocavallo",
+        precio:10000,
+        img:"caciocavallo.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Provoleta",
+        precio:5500,
+        img:"provoleta.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Quesillos x10",
+        precio:19000,
+        img:"quesillos10.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos de quesillo",
+        precio:2200,
+        img:"rollitos.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Rollitos x5",
+        precio:11000,
+        img:"rollitos5.jpg",
+        categoria:"Quesillos"
+    },
+    {
+        nombre:"Dulce de leche",
+        precio:4500,
+        img:"dulce.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Dulce de chayote",
+        precio:4500,
+        img:"chayote.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Higos en almíbar",
+        precio:4500,
+        img:"higos.jpg",
+        categoria:"Dulces"
+    },
+    {
+        nombre:"Mini mortadela",
+        precio:6800,
+        img:"mortadela.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Chacarero bastón",
+        precio:7200,
+        img:"chacarero.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salamines picado fino",
+        precio:4200,
+        img:"salamin.jpg",
+        categoria:"Salames"
+    },
+    {
+        nombre:"Salame criollo bastón",
+        precio:7500,
+        img:"salame.jpg",
+        categoria:"Salames"
+    }
 ];
 
 let carrito = Array(productos.length).fill(0);
 
 const categorias = ["Quesos","Quesillos","Dulces","Salames"];
 
-function obtenerPrecio(p){
-    if(!modoPublico) return p.precio;
-    const precioConAumento = p.precio * PORCENTAJE_PUBLICO;
-    return Math.round(precioConAumento / REDONDEO) * REDONDEO;
+function precioFinal(p){
+    if(!ventaPublico) return p.precio;
+    return Math.round((p.precio * 1.4) / 100) * 100;
 }
 
-function cambiarModoPrecio(esPublico){
-    modoPublico = esPublico;
-    document.getElementById("btn-mayorista").classList.toggle("active", !esPublico);
-    document.getElementById("btn-publico").classList.toggle("active", esPublico);
-    document.getElementById("nota-modo").innerText = esPublico
-        ? "Precios al público (+40% redondeados)"
-        : "Mostrando precios base";
-    render();
-    actualizarTotal();
+function setModoPublico(activo){
+    ventaPublico = activo;
+    document.getElementById("btnBase").classList.toggle("active", !activo);
+    document.getElementById("btnPublico").classList.toggle("active", activo);
+    document.getElementById("modoTexto").innerText = activo
+        ? "LISTA ACTIVA: VENTA AL PÚBLICO (+40%)"
+        : "LISTA ACTIVA: PRECIOS BASE";
+    render();
+    actualizarTotal();
 }
 
 function money(n){
-    return n.toLocaleString('es-AR');
+    return n.toLocaleString('es-AR');
 }
 
 function escapeHtml(value){
-    return String(value)
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    return String(value)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
 function totalProductos(){
-    return carrito.reduce((s,c)=>s+c,0);
+    return carrito.reduce((s,c)=>s+c,0);
 }
 
 function actualizarTotal(){
-    const total = productos.reduce((s,p,i)=>s + obtenerPrecio(p) * carrito[i],0);
-    document.getElementById("total").innerText = money(total);
-    document.getElementById("drawerTotal").innerText = money(total);
+    const total = productos.reduce((s,p,i)=>s + precioFinal(p) * carrito[i],0);
+    document.getElementById("total").innerText = money(total);
+    document.getElementById("drawerTotal").innerText = money(total);
 
-    const items = totalProductos();
-    document.getElementById("cartCount").innerText = items;
-    document.getElementById("bottomItems").innerText = `${items} producto${items===1?"":"s"}`;
+    const items = totalProductos();
+    document.getElementById("cartCount").innerText = items;
+    document.getElementById("bottomItems").innerText = `${items} producto${items===1?"":"s"}`;
 
-    renderCart();
+    renderCart();
 }
 
 function renderCategories(){
-    const bar = document.getElementById("categoryBar");
-    bar.innerHTML = `
-        <button class="category-chip active" onclick="irCategoria('todas',this)">Todos</button>
-        ${categorias.map(c => `<button class="category-chip" onclick="irCategoria('${c}',this)">${c}</button>`).join("")}
-    `;
+    const bar = document.getElementById("categoryBar");
+    bar.innerHTML = `
+        <button class="category-chip active" onclick="irCategoria('todas',this)">Todos</button>
+        ${categorias.map(c => `<button class="category-chip" onclick="irCategoria('${c}',this)">${c}</button>`).join("")}
+    `;
 }
 
 function irCategoria(cat,btn){
-    document.querySelectorAll(".category-chip").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const el = cat === "todas" ? document.getElementById("products") : document.getElementById("cat-"+cat);
-    if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+    document.querySelectorAll(".category-chip").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const el = cat === "todas" ? document.getElementById("products") : document.getElementById("cat-"+cat);
+    if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function getBusqueda(){
-    return document.getElementById("busqueda").value.trim().toLowerCase();
+    return document.getElementById("busqueda").value.trim().toLowerCase();
 }
 
 function render(){
-    const container = document.getElementById("products");
-    const query = getBusqueda();
-    container.innerHTML = "";
-    let found = false;
+    const container = document.getElementById("products");
+    const query = getBusqueda();
+    container.innerHTML = "";
+    let found = false;
 
-    categorias.forEach(categoria=>{
-        const items = productos.map((p,i)=>({p,i})).filter(x =>
-            x.p.categoria===categoria &&
-            (!query || x.p.nombre.toLowerCase().includes(query))
-        );
-        if(!items.length) return;
+    categorias.forEach(categoria=>{
+        const items = productos.map((p,i)=>({p,i})).filter(x =>
+            x.p.categoria===categoria &&
+            (!query || x.p.nombre.toLowerCase().includes(query))
+        );
+        if(!items.length) return;
 
-        found = true;
-        let html = `<section class="categoria" id="cat-${categoria}">
-            <div class="titulo-categoria">
-                <h2>${categoria}</h2>
-                <span class="cantidad-cat">${items.length} opciones</span>
-            </div>
-            <div class="grid">`;
+        found = true;
+        let html = `<section class="categoria" id="cat-${categoria}">
+            <div class="titulo-categoria">
+                <h2>${categoria}</h2>
+                <span class="cantidad-cat">${items.length} opciones</span>
+            </div>
+            <div class="grid">`;
 
-        items.forEach(({p,i})=>{
-            const qty = carrito[i];
-            const precioActual = obtenerPrecio(p);
-            html += `
-            <article class="product">
-                <div class="product-media ${p.img ? "" : "no-image"}">
-                    ${p.img ? `<img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" loading="lazy" onerror="this.parentElement.classList.add('no-image');this.remove()">` : ""}
-                </div>
-                <div class="product-info">
-                    <div class="name">${escapeHtml(p.nombre)}</div>
-                    <div class="price">$${money(precioActual)}</div>
-                    <div class="product-actions">
-                        <button class="qty-btn" onclick="cambiar(${i},-1)">−</button>
-                        <div class="qty-num">${qty}</div>
-                        <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
-                        <button class="plus10" onclick="cambiar(${i},10)">+10</button>
-                    </div>
-                </div>
-            </article>`;
-        });
+        items.forEach(({p,i})=>{
+            const qty = carrito[i];
+            const precio = precioFinal(p);
+            html += `
+            <article class="product">
+                <div class="product-media ${p.img ? "" : "no-image"}">
+                    ${p.img ? `<img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" loading="lazy" onerror="this.parentElement.classList.add('no-image');this.remove()">` : ""}
+                </div>
+                <div class="product-info">
+                    <div class="name">${escapeHtml(p.nombre)}</div>
+                    <div class="price">$${money(precio)}</div>
+                    <div class="product-actions">
+                        <button class="qty-btn" onclick="cambiar(${i},-1)">−</button>
+                        <div class="qty-num">${qty}</div>
+                        <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
+                        <button class="plus10" onclick="cambiar(${i},10)">+10</button>
+                    </div>
+                </div>
+            </article>`;
+        });
 
-        html += `</div></section>`;
-        container.innerHTML += html;
-    });
+        html += `</div></section>`;
+        container.innerHTML += html;
+    });
 
-    document.getElementById("emptySearch").style.display = found ? "none" : "block";
+    document.getElementById("emptySearch").style.display = found ? "none" : "block";
 }
 
 function renderCart(){
-    const list = document.getElementById("cartList");
-    const selected = productos.map((p,i)=>({p,i})).filter(x=>carrito[x.i]>0);
+    const list = document.getElementById("cartList");
+    const selected = productos.map((p,i)=>({p,i})).filter(x=>carrito[x.i]>0);
 
-    if(!selected.length){
-        list.innerHTML = `<div style="padding:25px 10px;text-align:center;color:var(--muted)">Tu carrito está vacío.<br>Agregá productos para armar el pedido.</div>`;
-        return;
-    }
+    if(!selected.length){
+        list.innerHTML = `<div style="padding:25px 10px;text-align:center;color:var(--muted)">Tu carrito está vacío.<br>Agregá productos para armar el pedido.</div>`;
+        return;
+    }
 
-    list.innerHTML = selected.map(({p,i})=>{
-        const precioActual = obtenerPrecio(p);
-        return `
-        <div class="cart-item">
-            <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" onerror="this.style.visibility='hidden'">
-            <div>
-                <div class="cart-item-name">${escapeHtml(p.nombre)}</div>
-                <div class="cart-item-price">${carrito[i]} × $${money(precioActual)} = $${money(precioActual*carrito[i])}</div>
-            </div>
-            <div class="cart-item-controls">
-                <button class="mini-btn" onclick="cambiar(${i},-1)">−</button>
-                <span style="min-width:18px;text-align:center;font-weight:800">${carrito[i]}</span>
-                <button class="mini-btn" onclick="cambiar(${i},1)">+</button>
-            </div>
-        </div>
-    `}).join("");
+    list.innerHTML = selected.map(({p,i})=>{
+        const precio = precioFinal(p);
+        return `
+        <div class="cart-item">
+            <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" onerror="this.style.visibility='hidden'">
+            <div>
+                <div class="cart-item-name">${escapeHtml(p.nombre)}</div>
+                <div class="cart-item-price">${carrito[i]} × $${money(precio)} = $${money(precio*carrito[i])}</div>
+            </div>
+            <div class="cart-item-controls">
+                <button class="mini-btn" onclick="cambiar(${i},-1)">−</button>
+                <span style="min-width:18px;text-align:center;font-weight:800">${carrito[i]}</span>
+                <button class="mini-btn" onclick="cambiar(${i},1)">+</button>
+            </div>
+        </div>
+    `}).join("");
 }
 
 function cambiar(i,q){
-    carrito[i] = Math.max(0, carrito[i] + q);
-    actualizarTotal();
-    render();
+    carrito[i] = Math.max(0, carrito[i] + q);
+    actualizarTotal();
+    render();
 }
 
 function abrirCarrito(){
-    document.getElementById("drawer").classList.add("open");
-    document.getElementById("backdrop").classList.add("open");
-    document.body.style.overflow="hidden";
-    renderCart();
+    document.getElementById("drawer").classList.add("open");
+    document.getElementById("backdrop").classList.add("open");
+    document.body.style.overflow="hidden";
+    renderCart();
 }
 function cerrarCarrito(){
-    document.getElementById("drawer").classList.remove("open");
-    document.getElementById("backdrop").classList.remove("open");
-    document.body.style.overflow="";
+    document.getElementById("drawer").classList.remove("open");
+    document.getElementById("backdrop").classList.remove("open");
+    document.body.style.overflow="";
 }
 function vaciarCarrito(){
-    if(!carrito.some(c=>c>0)) return;
-    if(!confirm("¿Vaciar todo el carrito?")) return;
-    carrito=Array(productos.length).fill(0);
-    actualizarTotal();
-    render();
+    if(!carrito.some(c=>c>0)) return;
+    if(!confirm("¿Vaciar todo el carrito?")) return;
+    carrito=Array(productos.length).fill(0);
+    actualizarTotal();
+    render();
 }
 
 document.getElementById("busqueda").addEventListener("input", render);
 
 function validarPedido(){
-    if(!carrito.some(c=>c>0)){
-        alert("Agregá al menos un producto al carrito.");
-        abrirCarrito();
-        return null;
-    }
-    const nombre = document.getElementById("nombre").value.trim() || "CLIENTE";
-    const detalle = document.getElementById("detalle").value.trim();
-    return {nombre,detalle};
+    if(!carrito.some(c=>c>0)){
+        alert("Agregá al menos un producto al carrito.");
+        abrirCarrito();
+        return null;
+    }
+    const nombre = document.getElementById("nombre").value.trim() || "CLIENTE";
+    const detalle = document.getElementById("detalle").value.trim();
+    return {nombre,detalle};
 }
 
 function armarMensaje(){
-    const datos=validarPedido();
-    if(!datos) return null;
-    const tipoLista = modoPublico ? "Venta al Público" : "Precio Base";
-    let m =
-      `🧀 *PEDIDO - LA FÁBRICA*\n`+
-      `👤 Cliente: ${datos.nombre}\n`+
-      `📋 Lista: ${tipoLista}\n`+
-      `--------------------------\n`;
+    const datos=validarPedido();
+    if(!datos) return null;
+    let m =
+      `🧀 *PEDIDO - LA FÁBRICA*\n`+
+      `👤 Cliente: ${datos.nombre}\n`+
+      `--------------------------\n`;
 
-    categorias.forEach(categoria=>{
-        const seleccionados=productos.map((p,i)=>({p,i})).filter(x=>x.p.categoria===categoria && carrito[x.i]>0);
-        if(!seleccionados.length) return;
-        m += `\n*${categoria.toUpperCase()}*\n`;
-        seleccionados.forEach(({p,i})=>{
-            const precioActual = obtenerPrecio(p);
-            m += `• ${p.nombre} x${carrito[i]} ($${money(precioActual*carrito[i])})\n`;
-        });
-    });
+    categorias.forEach(categoria=>{
+        const seleccionados=productos.map((p,i)=>({p,i})).filter(x=>x.p.categoria===categoria && carrito[x.i]>0);
+        if(!seleccionados.length) return;
+        m += `\n*${categoria.toUpperCase()}*\n`;
+        seleccionados.forEach(({p,i})=>{
+            const precio = precioFinal(p);
+            m += `• ${p.nombre} x${carrito[i]} ($${money(precio*carrito[i])})\n`;
+        });
+    });
 
-    const total=productos.reduce((s,p,i)=>s+obtenerPrecio(p)*carrito[i],0);
-    m += `\n💰 *Total: $${money(total)}*`;
-    if(datos.detalle) m += `\n\n📝 Nota: ${datos.detalle}`;
-    return m;
+    const total=productos.reduce((s,p,i)=>s+precioFinal(p)*carrito[i],0);
+    m += `\n💰 *Total: $${money(total)}*`;
+    if(datos.detalle) m += `\n\n📝 Nota: ${datos.detalle}`;
+    return m;
 }
 
 function enviarPedido(){
-    const m=armarMensaje();
-    if(!m) return;
-    window.open("https://wa.me/5493816062471?text="+encodeURIComponent(m),"_blank");
+    const m=armarMensaje();
+    if(!m) return;
+    window.open("https://wa.me/5493816062471?text="+encodeURIComponent(m),"_blank");
 }
 
 async function enviarEImprimirPedido(){
-    const datos=validarPedido();
-    if(!datos) return;
-    if(PEDIDOS_API.includes("PEGAR_AQUI")){
-        alert("Falta configurar el servidor de pedidos en la página.");
-        return;
-    }
+    const datos=validarPedido();
+    if(!datos) return;
+    if(PEDIDOS_API.includes("PEGAR_AQUI")){
+        alert("Falta configurar el servidor de pedidos en la página.");
+        return;
+    }
 
-    const items=productos.map((p,i)=>({
-        nombre:p.nombre,
-        precio:obtenerPrecio(p),
-        cantidad:carrito[i],
-        categoria:p.categoria
-    })).filter(x=>x.cantidad>0);
-    const total=items.reduce((s,x)=>s+x.precio*x.cantidad,0);
+    const items=productos.map((p,i)=>({nombre:p.nombre,precio:precioFinal(p),cantidad:carrito[i],categoria:p.categoria})).filter(x=>x.cantidad>0);
+    const total=items.reduce((s,x)=>s+x.precio*x.cantidad,0);
 
-    const params=new URLSearchParams({
-        accion:"crear",
-        cliente:datos.nombre,
-        detalle:datos.detalle,
-        total:String(total),
-        items:JSON.stringify(items)
-    });
+    const params=new URLSearchParams({
+        accion:"crear",
+        cliente:datos.nombre,
+        detalle:datos.detalle,
+        total:String(total),
+        items:JSON.stringify(items)
+    });
 
-    try{
-        const r=await fetch(PEDIDOS_API+"?"+params.toString(),{method:"GET",cache:"no-store"});
-        const data=await r.json();
-        if(!data.ok) throw new Error(data.error || "No se pudo registrar el pedido");
-        alert(`✅ Pedido #${data.numero} recibido.\n\nSe enviará automáticamente a la impresora.`);
-        carrito=Array(productos.length).fill(0);
-        document.getElementById("nombre").value="";
-        document.getElementById("detalle").value="";
-        actualizarTotal(); render(); cerrarCarrito();
-    }catch(error){
-        console.error(error);
-        alert("❌ No se pudo enviar el pedido.\n\nRevisá la conexión a internet o la configuración del sistema.");
-    }
+    try{
+        const r=await fetch(PEDIDOS_API+"?"+params.toString(),{method:"GET",cache:"no-store"});
+        const data=await r.json();
+        if(!data.ok) throw new Error(data.error || "No se pudo registrar el pedido");
+        alert(`✅ Pedido #${data.numero} recibido.\n\nSe enviará automáticamente a la impresora.`);
+        carrito=Array(productos.length).fill(0);
+        document.getElementById("nombre").value="";
+        document.getElementById("detalle").value="";
+        actualizarTotal(); render(); cerrarCarrito();
+    }catch(error){
+        console.error(error);
+        alert("❌ No se pudo enviar el pedido.\n\nRevisá la conexión a internet o la configuración del sistema.");
+    }
 }
 
 function imprimirPedido(){
-    const datos=validarPedido();
-    if(!datos) return;
-    const fecha=new Date().toLocaleString('es-AR');
-    const total=productos.reduce((s,p,i)=>s+obtenerPrecio(p)*carrito[i],0);
+    const datos=validarPedido();
+    if(!datos) return;
+    const fecha=new Date().toLocaleString('es-AR');
+    const total=productos.reduce((s,p,i)=>s+precioFinal(p)*carrito[i],0);
 
-    let ticketHtml=`
-      <div style="text-align:center;">
-        <h2>LA FÁBRICA</h2>
-        <p>Artesanales de Calidad</p>
-        <p>--------------------------------</p>
-        <p>FECHA: ${fecha}</p>
-        <p>CLIENTE: ${escapeHtml(datos.nombre)}</p>
-        <p>--------------------------------</p>
-      </div>`;
+    let ticketHtml=`
+      <div style="text-align:center;">
+        <h2>LA FÁBRICA</h2>
+        <p>Artesanales de Calidad</p>
+        <p>--------------------------------</p>
+        <p>FECHA: ${fecha}</p>
+        <p>CLIENTE: ${escapeHtml(datos.nombre)}</p>
+        <p>--------------------------------</p>
+      </div>`;
 
-    categorias.forEach(categoria=>{
-        const seleccionados=productos.map((p,i)=>({p,i})).filter(x=>x.p.categoria===categoria && carrito[x.i]>0);
-        if(!seleccionados.length) return;
-        ticketHtml += `<div class="categoria-ticket">${categoria.toUpperCase()}</div><table>`;
-        seleccionados.forEach(({p,i})=>{
-            const precioActual = obtenerPrecio(p);
-            const subtotal=precioActual*carrito[i];
-            ticketHtml += `<tr><td>${escapeHtml(p.nombre)}<br>${carrito[i]} x $${money(precioActual)}</td><td>$${money(subtotal)}</td></tr>`;
-        });
-        ticketHtml += `</table>`;
-    });
+    categorias.forEach(categoria=>{
+        const seleccionados=productos.map((p,i)=>({p,i})).filter(x=>x.p.categoria===categoria && carrito[x.i]>0);
+        if(!seleccionados.length) return;
+        ticketHtml += `<div class="categoria-ticket">${categoria.toUpperCase()}</div><table>`;
+        seleccionados.forEach(({p,i})=>{
+            const precio = precioFinal(p);
+            const subtotal=precio*carrito[i];
+            ticketHtml += `<tr><td>${escapeHtml(p.nombre)}<br>${carrito[i]} x $${money(precio)}</td><td>$${money(subtotal)}</td></tr>`;
+        });
+        ticketHtml += `</table>`;
+    });
 
-    ticketHtml += `
-      <div style="text-align:center;">
-        <p>--------------------------------</p>
-        <h3>TOTAL: $${money(total)}</h3>
-        <p>--------------------------------</p>
-        ${datos.detalle ? `<p><strong>NOTA:</strong><br>${escapeHtml(datos.detalle)}</p>` : ""}
-        <p style="margin-top:8px;">¡Muchas gracias por su compra!</p>
-      </div>`;
+    ticketHtml += `
+      <div style="text-align:center;">
+        <p>--------------------------------</p>
+        <h3>TOTAL: $${money(total)}</h3>
+        <p>--------------------------------</p>
+        ${datos.detalle ? `<p><strong>NOTA:</strong><br>${escapeHtml(datos.detalle)}</p>` : ""}
+        <p style="margin-top:8px;">¡Muchas gracias por su compra!</p>
+      </div>`;
 
-    document.getElementById("print-container").innerHTML=ticketHtml;
-    window.print();
+    document.getElementById("print-container").innerHTML=ticketHtml;
+    window.print();
 }
 
 renderCategories();
@@ -869,4 +822,3 @@ actualizarTotal();
 </script>
 </body>
 </html>
-

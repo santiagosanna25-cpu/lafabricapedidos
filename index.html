@@ -328,7 +328,7 @@ img{max-width:100%;display:block}
         <div class="modo-label" id="modoTexto">LISTA ACTIVA: PRECIOS BASE</div>
         <div class="modo-botones">
             <button class="modo-btn active" id="btnBase" onclick="setModoPublico(false)">Precio Base</button>
-            <button class="modo-btn" id="btnPublico" onclick="setModoPublico(true)">Venta al Público (+40%)</button>
+            <button class="modo-btn" id="btnPublico" onclick="setModoPublico(true)">Venta al Público (+15%)</button>
         </div>
     </div>
 </div>
@@ -392,153 +392,37 @@ const PEDIDOS_API = "https://script.google.com/macros/s/AKfycbzGB3lp8TNXR6PSYMMW
 let ventaPublico = false;
 
 const productos = [
-    {
-        nombre:"Criollitos",
-        precio:4800,
-        img:"criollitos.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollitos al vacío",
-        precio:5000,
-        img:"vacio.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso criollo",
-        precio:8300,
-        img:"criollo.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollo grande",
-        precio:8800,
-        img:"grande.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Criollos medianos",
-        precio:5800,
-        img:"criollos.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso cáscara roja",
-        precio:8500,
-        img:"cascararoja.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Holanda",
-        precio:8500,
-        img:"holanda.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso semiduro",
-        precio:9000,
-        img:"semiduro.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Queso criollo en barra",
-        precio:10000,
-        img:"barra.jpg",
-        categoria:"Quesos"
-    },
-    {
-        nombre:"Quesillo tradicional",
-        precio:3600,
-        img:"quesillo.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Quesillos postre",
-        precio:19000,
-        img:"Quesillos postre.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Caciocavallo",
-        precio:10000,
-        img:"caciocavallo.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Provoleta",
-        precio:5500,
-        img:"provoleta.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Quesillos x10",
-        precio:19000,
-        img:"quesillos10.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Rollitos de quesillo",
-        precio:2200,
-        img:"rollitos.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Rollitos x5",
-        precio:11000,
-        img:"rollitos5.jpg",
-        categoria:"Quesillos"
-    },
-    {
-        nombre:"Dulce de leche",
-        precio:4500,
-        img:"dulce.jpg",
-        categoria:"Dulces"
-    },
-    {
-        nombre:"Dulce de chayote",
-        precio:4500,
-        img:"chayote.jpg",
-        categoria:"Dulces"
-    },
-    {
-        nombre:"Higos en almíbar",
-        precio:4500,
-        img:"higos.jpg",
-        categoria:"Dulces"
-    },
-    {
-        nombre:"Mini mortadela",
-        precio:6800,
-        img:"mortadela.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Chacarero bastón",
-        precio:7200,
-        img:"chacarero.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Salamines picado fino",
-        precio:4200,
-        img:"salamin.jpg",
-        categoria:"Salames"
-    },
-    {
-        nombre:"Salame criollo bastón",
-        precio:7500,
-        img:"salame.jpg",
-        categoria:"Salames"
-    }
+    {nombre:"Criollitos", precio:4800, img:"criollitos.jpg", categoria:"Quesos"},
+    {nombre:"Criollitos al vacío", precio:5000, img:"vacio.jpg", categoria:"Quesos"},
+    {nombre:"Queso criollo", precio:8300, img:"criollo.jpg", categoria:"Quesos"},
+    {nombre:"Criollo grande", precio:8800, img:"grande.jpg", categoria:"Quesos"},
+    {nombre:"Criollos medianos", precio:5800, img:"criollos.jpg", categoria:"Quesos"},
+    {nombre:"Queso cáscara roja", precio:8500, img:"cascararoja.jpg", categoria:"Quesos"},
+    {nombre:"Holanda", precio:8500, img:"holanda.jpg", categoria:"Quesos"},
+    {nombre:"Queso semiduro", precio:9000, img:"semiduro.jpg", categoria:"Quesos"},
+    {nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg", categoria:"Quesos"},
+    {nombre:"Quesillo tradicional", precio:3600, img:"quesillo.jpg", categoria:"Quesillos"},
+    {nombre:"Quesillos postre", precio:19000, img:"Quesillos postre.jpg", categoria:"Quesillos"},
+    {nombre:"Caciocavallo", precio:10000, img:"caciocavallo.jpg", categoria:"Quesillos"},
+    {nombre:"Provoleta", precio:5500, img:"provoleta.jpg", categoria:"Quesillos"},
+    {nombre:"Quesillos x10", precio:19000, img:"quesillos10.jpg", categoria:"Quesillos"},
+    {nombre:"Rollitos de quesillo", precio:2200, img:"rollitos.jpg", categoria:"Quesillos"},
+    {nombre:"Rollitos x5", precio:11000, img:"rollitos5.jpg", categoria:"Quesillos"},
+    {nombre:"Dulce de leche", precio:4500, img:"dulce.jpg", categoria:"Dulces"},
+    {nombre:"Dulce de chayote", precio:4500, img:"chayote.jpg", categoria:"Dulces"},
+    {nombre:"Higos en almíbar", precio:4500, img:"higos.jpg", categoria:"Dulces"},
+    {nombre:"Mini mortadela", precio:6800, img:"mortadela.jpg", categoria:"Salames"},
+    {nombre:"Chacarero bastón", precio:7200, img:"chacarero.jpg", categoria:"Salames"},
+    {nombre:"Salamines picado fino", precio:4200, img:"salamin.jpg", categoria:"Salames"},
+    {nombre:"Salame criollo bastón", precio:7500, img:"salame.jpg", categoria:"Salames"}
 ];
 
 let carrito = Array(productos.length).fill(0);
-
 const categorias = ["Quesos","Quesillos","Dulces","Salames"];
 
 function precioFinal(p){
     if(!ventaPublico) return p.precio;
-    return Math.round((p.precio * 1.4) / 100) * 100;
+    return Math.round((p.precio * 1.15) / 100) * 100;
 }
 
 function setModoPublico(activo){
@@ -546,35 +430,27 @@ function setModoPublico(activo){
     document.getElementById("btnBase").classList.toggle("active", !activo);
     document.getElementById("btnPublico").classList.toggle("active", activo);
     document.getElementById("modoTexto").innerText = activo
-        ? "LISTA ACTIVA: VENTA AL PÚBLICO (+40%)"
+        ? "LISTA ACTIVA: VENTA AL PÚBLICO (+15%)"
         : "LISTA ACTIVA: PRECIOS BASE";
     render();
     actualizarTotal();
 }
 
-function money(n){
-    return n.toLocaleString('es-AR');
-}
+function money(n){ return n.toLocaleString('es-AR'); }
 
 function escapeHtml(value){
-    return String(value)
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
-function totalProductos(){
-    return carrito.reduce((s,c)=>s+c,0);
-}
+function totalProductos(){ return carrito.reduce((s,c)=>s+c,0); }
 
 function actualizarTotal(){
     const total = productos.reduce((s,p,i)=>s + precioFinal(p) * carrito[i],0);
     document.getElementById("total").innerText = money(total);
     document.getElementById("drawerTotal").innerText = money(total);
-
     const items = totalProductos();
     document.getElementById("cartCount").innerText = items;
     document.getElementById("bottomItems").innerText = `${items} producto${items===1?"":"s"}`;
-
     renderCart();
 }
 
@@ -593,9 +469,7 @@ function irCategoria(cat,btn){
     if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-function getBusqueda(){
-    return document.getElementById("busqueda").value.trim().toLowerCase();
-}
+function getBusqueda(){ return document.getElementById("busqueda").value.trim().toLowerCase(); }
 
 function render(){
     const container = document.getElementById("products");

@@ -65,12 +65,23 @@ img{max-width:100%;display:block}
     color:#fff;font-size:12px;white-space:nowrap;
 }
 
+/* PESTAÑAS */
+.tabs{
+    max-width:1050px;margin:12px auto 0;padding:0 14px;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.tab{
+    height:42px;border:1px solid var(--border);background:var(--surface);
+    color:var(--muted);border-radius:12px;font-weight:800;font-size:14px;
+}
+.tab.active{background:var(--accent);color:#1b1307;border-color:var(--accent-2)}
+
 /* TOP BAR */
 .topbar{
     position:sticky;top:0;z-index:50;
     background:rgba(11,13,14,.86);backdrop-filter:blur(16px);
     border-bottom:1px solid var(--border);
-    padding:10px 14px;
+    padding:10px 14px;margin-top:12px;
 }
 .topbar-inner{max-width:1050px;margin:auto;display:flex;gap:10px;align-items:center}
 .search{
@@ -257,6 +268,32 @@ img{max-width:100%;display:block}
 .action.wa{background:var(--green);color:#07160d}
 .clear{display:block;width:100%;margin-top:9px;border:0;background:transparent;color:#b8bdbc;font-size:12px;padding:7px}
 
+/* PRODUCCIÓN */
+#vistaProduccion{display:none;max-width:620px;margin:0 auto;padding:14px 14px 40px}
+#vistaProduccion h2.ptitulo{font-size:24px;letter-spacing:-.5px}
+#vistaProduccion .psub{color:var(--muted);font-size:13px;margin:4px 0 14px;text-transform:capitalize}
+#vistaProduccion .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
+#vistaProduccion .card h3{font-size:16px;margin-bottom:10px}
+#vistaProduccion .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+#vistaProduccion .row:last-child{border-bottom:0}
+#vistaProduccion .lbl{font-weight:700;font-size:15px}
+#vistaProduccion .lbl small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+#vistaProduccion .ctl{display:flex;align-items:center;gap:6px}
+#vistaProduccion .ctl button{width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:#fff;font-size:20px;font-weight:700}
+#vistaProduccion .ctl input{width:58px;height:36px;text-align:center;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:#fff;font-weight:800;font-size:16px}
+#vistaProduccion .big{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(216,166,75,.1);border:1px solid rgba(216,166,75,.3);margin-top:10px}
+#vistaProduccion .big span{color:var(--muted);font-size:13px}
+#vistaProduccion .big strong{font-size:26px;color:var(--accent-2)}
+#vistaProduccion .calc div{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
+#vistaProduccion .calc div span{color:var(--muted)}
+#vistaProduccion .res{margin-top:8px;padding:12px;border-radius:12px;text-align:center;font-weight:800;font-size:17px}
+#vistaProduccion .res.ok{background:rgba(36,201,107,.12);color:var(--green);border:1px solid rgba(36,201,107,.3)}
+#vistaProduccion .res.mal{background:rgba(233,95,98,.12);color:var(--danger);border:1px solid rgba(233,95,98,.3)}
+#vistaProduccion .btns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#vistaProduccion .btn{border:0;border-radius:12px;padding:14px;font-weight:800}
+#vistaProduccion .btn.print{background:var(--accent);color:#1b1307}
+#vistaProduccion .btn.reset{background:var(--surface-2);color:#fff;border:1px solid var(--border)}
+
 /* PRINT */
 #print-container{display:none}
 @media print{
@@ -313,6 +350,14 @@ img{max-width:100%;display:block}
     </div>
 </section>
 
+<div class="tabs">
+    <button class="tab active" id="tabPedidos" onclick="verVista('pedidos')">🛒 Pedidos</button>
+    <button class="tab" id="tabProduccion" onclick="verVista('produccion')">🏭 Producción</button>
+</div>
+
+<!-- ================= VISTA PEDIDOS ================= -->
+<div id="vistaPedidos">
+
 <div class="topbar">
   <div class="topbar-inner">
     <div class="search">
@@ -349,6 +394,57 @@ img{max-width:100%;display:block}
         </div>
         <button class="open-cart" onclick="abrirCarrito()">Ver carrito →</button>
     </div>
+</div>
+
+</div>
+
+<!-- ================= VISTA PRODUCCIÓN ================= -->
+<div id="vistaProduccion">
+  <h2 class="ptitulo">🏭 Producción del día</h2>
+  <p class="psub" id="pFecha"></p>
+
+  <div class="card">
+    <h3>Tachos</h3>
+    <div class="row">
+      <div class="lbl">Cantidad de tachos<small>Cada tacho = 15 quesos chicos</small></div>
+      <div class="ctl" id="ctl-tachos"></div>
+    </div>
+    <div class="big"><span>Quesos chicos que saldrán</span><strong id="pDisponibles">0</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>Quesos chicos por sabor</h3>
+    <div id="pSabores"></div>
+    <div class="big"><span>Total chicos a hacer</span><strong id="pTotalChicos">0</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>Grandes y barras</h3>
+    <div class="row">
+      <div class="lbl">Quesos grandes<small>1 grande = 2 chicos</small></div>
+      <div class="ctl" id="ctl-grandes"></div>
+    </div>
+    <div class="row">
+      <div class="lbl">Barras<small>1 barra = 10 chicos</small></div>
+      <div class="ctl" id="ctl-barras"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Resta</h3>
+    <div class="calc">
+      <div><span>Quesos chicos que saldrán</span><b id="c-disp">0</b></div>
+      <div><span>− Chicos por sabor</span><b id="c-chicos">0</b></div>
+      <div><span>− Chicos usados en grandes</span><b id="c-grandes">0</b></div>
+      <div><span>− Chicos usados en barras</span><b id="c-barras">0</b></div>
+    </div>
+    <div class="res ok" id="pResultado"></div>
+  </div>
+
+  <div class="btns">
+    <button class="btn reset" onclick="prodLimpiar()">Limpiar todo</button>
+    <button class="btn print" onclick="prodImprimir()">🖨️ Imprimir</button>
+  </div>
 </div>
 
 <div class="drawer-backdrop" id="backdrop" onclick="cerrarCarrito()"></div>
@@ -690,9 +786,100 @@ function imprimirPedido(){
     window.print();
 }
 
+/* ================= PESTAÑAS ================= */
+function verVista(vista){
+    const prod = vista === "produccion";
+    document.getElementById("vistaPedidos").style.display = prod ? "none" : "block";
+    document.getElementById("vistaProduccion").style.display = prod ? "block" : "none";
+    document.getElementById("tabPedidos").classList.toggle("active", !prod);
+    document.getElementById("tabProduccion").classList.toggle("active", prod);
+    window.scrollTo({top:0});
+}
+
+/* ================= PRODUCCIÓN ================= */
+const SABORES = ["Naturales","Orégano","Ají","Chimi","Provenzal","Albahaca","Pesto","Locoto","Pimienta"];
+const POR_TACHO = 15, CHICOS_POR_GRANDE = 2, CHICOS_POR_BARRA = 10;
+const prod = {tachos:0, grandes:0, barras:0, sabores:SABORES.map(()=>0)};
+
+function prodCtl(el,get,set){
+    el.innerHTML = '<button>−</button><input type="number" inputmode="numeric" min="0"><button>+</button>';
+    const [m,inp,p] = el.children;
+    inp.value = get();
+    m.onclick = ()=>{ set(Math.max(0,get()-1)); inp.value = get(); prodCalc(); };
+    p.onclick = ()=>{ set(get()+1); inp.value = get(); prodCalc(); };
+    inp.oninput = ()=>{ set(Math.max(0,parseInt(inp.value)||0)); prodCalc(); };
+    inp.onfocus = ()=>inp.select();
+}
+
+function prodInit(){
+    document.getElementById("pFecha").innerText = new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    prodCtl(document.getElementById("ctl-tachos"), ()=>prod.tachos, n=>prod.tachos=n);
+    prodCtl(document.getElementById("ctl-grandes"), ()=>prod.grandes, n=>prod.grandes=n);
+    prodCtl(document.getElementById("ctl-barras"), ()=>prod.barras, n=>prod.barras=n);
+    const box = document.getElementById("pSabores");
+    box.innerHTML = "";
+    SABORES.forEach((s,i)=>{
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = '<div class="lbl">'+s+'</div><div class="ctl"></div>';
+        box.appendChild(row);
+        prodCtl(row.querySelector(".ctl"), ()=>prod.sabores[i], n=>prod.sabores[i]=n);
+    });
+    prodCalc();
+}
+
+function prodDatos(){
+    const disp = prod.tachos * POR_TACHO;
+    const chicos = prod.sabores.reduce((a,b)=>a+b,0);
+    const g = prod.grandes * CHICOS_POR_GRANDE;
+    const b = prod.barras * CHICOS_POR_BARRA;
+    return {disp, chicos, g, b, resta: disp - chicos - g - b};
+}
+
+function prodCalc(){
+    const d = prodDatos();
+    document.getElementById("pDisponibles").innerText = d.disp;
+    document.getElementById("pTotalChicos").innerText = d.chicos;
+    document.getElementById("c-disp").innerText = d.disp;
+    document.getElementById("c-chicos").innerText = d.chicos;
+    document.getElementById("c-grandes").innerText = d.g;
+    document.getElementById("c-barras").innerText = d.b;
+    const r = document.getElementById("pResultado");
+    if(d.resta >= 0){ r.className = "res ok"; r.innerText = "Quedan "+d.resta+" quesos chicos sin asignar"; }
+    else{ r.className = "res mal"; r.innerText = "Faltan "+Math.abs(d.resta)+" quesos chicos"; }
+}
+
+function prodLimpiar(){
+    if(!confirm("¿Limpiar toda la producción?")) return;
+    prod.tachos = prod.grandes = prod.barras = 0;
+    prod.sabores = SABORES.map(()=>0);
+    prodInit();
+}
+
+function prodImprimir(){
+    const d = prodDatos();
+    let h = `<div style="text-align:center;"><h2>LA FÁBRICA</h2><p>PRODUCCIÓN DEL DÍA</p><p>${new Date().toLocaleDateString('es-AR')}</p><p>--------------------------------</p></div>`;
+    h += `<table><tr><td>Tachos</td><td><b>${prod.tachos}</b></td></tr><tr><td>Chicos que saldrán</td><td><b>${d.disp}</b></td></tr></table>`;
+    if(prod.sabores.some(n=>n>0)){
+        h += `<div class="categoria-ticket">QUESOS CHICOS</div><table>`;
+        SABORES.forEach((s,i)=>{ if(prod.sabores[i]>0) h += `<tr><td>${s}</td><td><b>${prod.sabores[i]}</b></td></tr>`; });
+        h += `<tr><td><b>Total chicos</b></td><td><b>${d.chicos}</b></td></tr></table>`;
+    }
+    if(prod.grandes>0 || prod.barras>0){
+        h += `<div class="categoria-ticket">GRANDES Y BARRAS</div><table>`;
+        if(prod.grandes>0) h += `<tr><td>Quesos grandes<br>(${d.g} chicos)</td><td><b>${prod.grandes}</b></td></tr>`;
+        if(prod.barras>0) h += `<tr><td>Barras<br>(${d.b} chicos)</td><td><b>${prod.barras}</b></td></tr>`;
+        h += `</table>`;
+    }
+    h += `<div style="text-align:center;"><p>--------------------------------</p><p><b>${d.resta>=0?"Sobran":"FALTAN"}: ${Math.abs(d.resta)} chicos</b></p></div>`;
+    document.getElementById("print-container").innerHTML = h;
+    window.print();
+}
+
 renderCategories();
 render();
 actualizarTotal();
+prodInit();
 </script>
 </body>
 </html>

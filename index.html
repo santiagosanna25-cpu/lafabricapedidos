@@ -292,6 +292,7 @@ img{max-width:100%;display:block}
 #vistaProduccion .btns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 #vistaProduccion .btn{border:0;border-radius:12px;padding:14px;font-weight:800}
 #vistaProduccion .btn.print{background:var(--accent);color:#1b1307}
+#vistaProduccion .btn.wa{background:var(--green);color:#07160d;grid-column:1/-1}
 #vistaProduccion .btn.reset{background:var(--surface-2);color:#fff;border:1px solid var(--border)}
 
 /* PRINT */
@@ -442,6 +443,7 @@ img{max-width:100%;display:block}
   </div>
 
   <div class="btns">
+    <button class="btn wa" onclick="prodEnviar()">📲 Enviar a la impresora</button>
     <button class="btn reset" onclick="prodLimpiar()">Limpiar todo</button>
     <button class="btn print" onclick="prodImprimir()">🖨️ Imprimir</button>
   </div>
@@ -854,6 +856,39 @@ function prodLimpiar(){
     prod.tachos = prod.grandes = prod.barras = 0;
     prod.sabores = SABORES.map(()=>0);
     prodInit();
+}
+
+async function prodEnviar(){
+    const d = prodDatos();
+    const items = [
+        {nombre:"Tachos", cantidad:prod.tachos, categoria:"TACHOS"},
+        {nombre:"Chicos que saldran", cantidad:d.disp, categoria:"TACHOS"}
+    ];
+    SABORES.forEach((s,i)=>{ if(prod.sabores[i]>0) items.push({nombre:s, cantidad:prod.sabores[i], categoria:"QUESOS CHICOS"}); });
+    if(d.chicos>0) items.push({nombre:"Total chicos", cantidad:d.chicos, categoria:"QUESOS CHICOS"});
+    if(prod.grandes>0) items.push({nombre:"Quesos grandes", cantidad:prod.grandes, categoria:"GRANDES Y BARRAS"});
+    if(prod.barras>0) items.push({nombre:"Barras", cantidad:prod.barras, categoria:"GRANDES Y BARRAS"});
+    const lista = items.filter(x=>x.cantidad>0).map(x=>({...x, precio:0}));
+    if(lista.length<=2 && d.chicos===0 && !prod.grandes && !prod.barras){
+        alert("Cargá la producción antes de enviar.");
+        return;
+    }
+    const params = new URLSearchParams({
+        accion:"crear",
+        cliente:"PRODUCCION",
+        detalle:(d.resta>=0?"Sobran: ":"FALTAN: ")+Math.abs(d.resta)+" chicos",
+        total:"0",
+        items:JSON.stringify(lista)
+    });
+    try{
+        const r = await fetch(PEDIDOS_API+"?"+params.toString(),{method:"GET",cache:"no-store"});
+        const data = await r.json();
+        if(!data.ok) throw new Error(data.error || "No se pudo registrar");
+        alert("✅ Producción enviada.\n\nSe imprimirá automáticamente.");
+    }catch(error){
+        console.error(error);
+        alert("❌ No se pudo enviar la producción.\n\nRevisá la conexión a internet.");
+    }
 }
 
 function prodImprimir(){

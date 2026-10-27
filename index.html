@@ -317,6 +317,11 @@ img{max-width:100%;display:block}
     #print-container td:last-child{width:30%;text-align:right;white-space:nowrap}
     #print-container .categoria-ticket{margin-top:8px;margin-bottom:3px;font-weight:bold;font-size:13px;border-bottom:1px dashed #000;padding-bottom:2px}
     #print-container tr{break-inside:avoid;page-break-inside:avoid}
+    #print-container .grande{font-size:22px;line-height:1.3;font-weight:bold}
+    #print-container .grande h2{font-size:30px}
+    #print-container .grande td{font-size:22px;padding:4px 0}
+    #print-container .grande .categoria-ticket{font-size:24px;margin-top:12px}
+    #print-container .grande p{font-size:20px}
 }
 @media (min-width:720px){
     .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -420,11 +425,14 @@ img{max-width:100%;display:block}
   </div>
 
   <div class="card">
-    <h3>Grandes y barras</h3>
-    <div class="row">
-      <div class="lbl">Quesos grandes<small>1 grande = 2 chicos</small></div>
-      <div class="ctl" id="ctl-grandes"></div>
-    </div>
+    <h3>Quesos grandes por sabor</h3>
+    <p style="color:var(--muted);font-size:12px;margin:-4px 0 6px">1 grande = 2 chicos</p>
+    <div id="pGrandes"></div>
+    <div class="big"><span>Total grandes</span><strong id="pTotalGrandes">0</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>Barras</h3>
     <div class="row">
       <div class="lbl">Barras<small>1 barra = 10 chicos</small></div>
       <div class="ctl" id="ctl-barras"></div>
@@ -800,8 +808,10 @@ function verVista(vista){
 
 /* ================= PRODUCCIÓN ================= */
 const SABORES = ["Naturales","Orégano","Ají","Chimi","Provenzal","Albahaca","Pesto","Locoto","Pimienta"];
+const SABORES_GRANDES = ["Naturales","Orégano","Ají","Provenzal","Chimi","Albahaca","Pimienta","Pesto"];
 const POR_TACHO = 15, CHICOS_POR_GRANDE = 2, CHICOS_POR_BARRA = 10;
-const prod = {tachos:0, grandes:0, barras:0, sabores:SABORES.map(()=>0)};
+const prod = {tachos:0, barras:0, sabores:SABORES.map(()=>0), grandes:SABORES_GRANDES.map(()=>0)};
+const suma = a => a.reduce((x,y)=>x+y,0);
 
 function prodCtl(el,get,set){
     el.innerHTML = '<button>−</button><input type="number" inputmode="numeric" min="0"><button>+</button>';
@@ -813,35 +823,41 @@ function prodCtl(el,get,set){
     inp.onfocus = ()=>inp.select();
 }
 
-function prodInit(){
-    document.getElementById("pFecha").innerText = new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    prodCtl(document.getElementById("ctl-tachos"), ()=>prod.tachos, n=>prod.tachos=n);
-    prodCtl(document.getElementById("ctl-grandes"), ()=>prod.grandes, n=>prod.grandes=n);
-    prodCtl(document.getElementById("ctl-barras"), ()=>prod.barras, n=>prod.barras=n);
-    const box = document.getElementById("pSabores");
+function prodFilas(idCaja, nombres, arr){
+    const box = document.getElementById(idCaja);
     box.innerHTML = "";
-    SABORES.forEach((s,i)=>{
+    nombres.forEach((s,i)=>{
         const row = document.createElement("div");
         row.className = "row";
         row.innerHTML = '<div class="lbl">'+s+'</div><div class="ctl"></div>';
         box.appendChild(row);
-        prodCtl(row.querySelector(".ctl"), ()=>prod.sabores[i], n=>prod.sabores[i]=n);
+        prodCtl(row.querySelector(".ctl"), ()=>arr[i], n=>arr[i]=n);
     });
+}
+
+function prodInit(){
+    document.getElementById("pFecha").innerText = new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    prodCtl(document.getElementById("ctl-tachos"), ()=>prod.tachos, n=>prod.tachos=n);
+    prodCtl(document.getElementById("ctl-barras"), ()=>prod.barras, n=>prod.barras=n);
+    prodFilas("pSabores", SABORES, prod.sabores);
+    prodFilas("pGrandes", SABORES_GRANDES, prod.grandes);
     prodCalc();
 }
 
 function prodDatos(){
     const disp = prod.tachos * POR_TACHO;
-    const chicos = prod.sabores.reduce((a,b)=>a+b,0);
-    const g = prod.grandes * CHICOS_POR_GRANDE;
+    const chicos = suma(prod.sabores);
+    const nG = suma(prod.grandes);
+    const g = nG * CHICOS_POR_GRANDE;
     const b = prod.barras * CHICOS_POR_BARRA;
-    return {disp, chicos, g, b, resta: disp - chicos - g - b};
+    return {disp, chicos, nG, g, b, resta: disp - chicos - g - b};
 }
 
 function prodCalc(){
     const d = prodDatos();
     document.getElementById("pDisponibles").innerText = d.disp;
     document.getElementById("pTotalChicos").innerText = d.chicos;
+    document.getElementById("pTotalGrandes").innerText = d.nG;
     document.getElementById("c-disp").innerText = d.disp;
     document.getElementById("c-chicos").innerText = d.chicos;
     document.getElementById("c-grandes").innerText = d.g;
@@ -853,26 +869,31 @@ function prodCalc(){
 
 function prodLimpiar(){
     if(!confirm("¿Limpiar toda la producción?")) return;
-    prod.tachos = prod.grandes = prod.barras = 0;
+    prod.tachos = 0; prod.barras = 0;
     prod.sabores = SABORES.map(()=>0);
+    prod.grandes = SABORES_GRANDES.map(()=>0);
     prodInit();
 }
 
-async function prodEnviar(){
-    const d = prodDatos();
+function prodItems(d){
     const items = [
         {nombre:"Tachos", cantidad:prod.tachos, categoria:"TACHOS"},
-        {nombre:"Chicos que saldran", cantidad:d.disp, categoria:"TACHOS"}
+        {nombre:"Chicos salen", cantidad:d.disp, categoria:"TACHOS"}
     ];
-    SABORES.forEach((s,i)=>{ if(prod.sabores[i]>0) items.push({nombre:s, cantidad:prod.sabores[i], categoria:"QUESOS CHICOS"}); });
-    if(d.chicos>0) items.push({nombre:"Total chicos", cantidad:d.chicos, categoria:"QUESOS CHICOS"});
-    if(prod.grandes>0) items.push({nombre:"Quesos grandes", cantidad:prod.grandes, categoria:"GRANDES Y BARRAS"});
-    if(prod.barras>0) items.push({nombre:"Barras", cantidad:prod.barras, categoria:"GRANDES Y BARRAS"});
-    const lista = items.filter(x=>x.cantidad>0).map(x=>({...x, precio:0}));
-    if(lista.length<=2 && d.chicos===0 && !prod.grandes && !prod.barras){
-        alert("Cargá la producción antes de enviar.");
-        return;
-    }
+    SABORES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.sabores[i], categoria:"QUESOS CHICOS"}));
+    items.push({nombre:"Total chicos", cantidad:d.chicos, categoria:"QUESOS CHICOS"});
+    SABORES_GRANDES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.grandes[i], categoria:"QUESOS GRANDES"}));
+    items.push({nombre:"Total grandes", cantidad:d.nG, categoria:"QUESOS GRANDES"});
+    items.push({nombre:"Barras", cantidad:prod.barras, categoria:"BARRAS"});
+    return items.filter(x=>x.cantidad>0);
+}
+
+function prodVacia(d){ return d.chicos===0 && d.nG===0 && prod.barras===0; }
+
+async function prodEnviar(){
+    const d = prodDatos();
+    if(prodVacia(d)){ alert("Cargá la producción antes de enviar."); return; }
+    const lista = prodItems(d).map(x=>({...x, precio:0}));
     const params = new URLSearchParams({
         accion:"crear",
         cliente:"PRODUCCION",
@@ -893,20 +914,19 @@ async function prodEnviar(){
 
 function prodImprimir(){
     const d = prodDatos();
-    let h = `<div style="text-align:center;"><h2>LA FÁBRICA</h2><p>PRODUCCIÓN DEL DÍA</p><p>${new Date().toLocaleDateString('es-AR')}</p><p>--------------------------------</p></div>`;
-    h += `<table><tr><td>Tachos</td><td><b>${prod.tachos}</b></td></tr><tr><td>Chicos que saldrán</td><td><b>${d.disp}</b></td></tr></table>`;
-    if(prod.sabores.some(n=>n>0)){
-        h += `<div class="categoria-ticket">QUESOS CHICOS</div><table>`;
-        SABORES.forEach((s,i)=>{ if(prod.sabores[i]>0) h += `<tr><td>${s}</td><td><b>${prod.sabores[i]}</b></td></tr>`; });
-        h += `<tr><td><b>Total chicos</b></td><td><b>${d.chicos}</b></td></tr></table>`;
-    }
-    if(prod.grandes>0 || prod.barras>0){
-        h += `<div class="categoria-ticket">GRANDES Y BARRAS</div><table>`;
-        if(prod.grandes>0) h += `<tr><td>Quesos grandes<br>(${d.g} chicos)</td><td><b>${prod.grandes}</b></td></tr>`;
-        if(prod.barras>0) h += `<tr><td>Barras<br>(${d.b} chicos)</td><td><b>${prod.barras}</b></td></tr>`;
-        h += `</table>`;
-    }
-    h += `<div style="text-align:center;"><p>--------------------------------</p><p><b>${d.resta>=0?"Sobran":"FALTAN"}: ${Math.abs(d.resta)} chicos</b></p></div>`;
+    if(prodVacia(d)){ alert("Cargá la producción antes de imprimir."); return; }
+    let h = `<div class="grande"><div style="text-align:center;"><h2>LA FÁBRICA</h2><p>PRODUCCIÓN DEL DÍA</p><p>${new Date().toLocaleDateString('es-AR')}</p></div>`;
+    let ultima = "";
+    prodItems(d).forEach(x=>{
+        if(x.categoria !== ultima){
+            if(ultima) h += `</table>`;
+            h += `<div class="categoria-ticket">${x.categoria}</div><table>`;
+            ultima = x.categoria;
+        }
+        h += `<tr><td>${x.nombre}</td><td>${x.cantidad}</td></tr>`;
+    });
+    if(ultima) h += `</table>`;
+    h += `<div style="text-align:center;margin-top:12px"><p>${d.resta>=0?"SOBRAN":"FALTAN"}: ${Math.abs(d.resta)} chicos</p></div></div>`;
     document.getElementById("print-container").innerHTML = h;
     window.print();
 }

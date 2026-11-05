@@ -268,6 +268,30 @@ img{max-width:100%;display:block}
 .action.wa{background:var(--green);color:#07160d}
 .clear{display:block;width:100%;margin-top:9px;border:0;background:transparent;color:#b8bdbc;font-size:12px;padding:7px}
 
+/* SABORES / PEGAR PEDIDO */
+.sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:110;margin:auto;max-width:560px;
+    max-height:88vh;background:#101314;border:1px solid var(--border);border-bottom:0;
+    border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .28s ease;
+    display:flex;flex-direction:column;
+}
+.sheet.open{transform:translateY(0)}
+.sab-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sab-row .sab-name{font-weight:700;font-size:15px}
+.sabores-btn{
+    width:100%;margin-top:9px;height:38px;border:1px dashed rgba(216,166,75,.5);
+    background:rgba(216,166,75,.08);color:var(--accent-2);border-radius:11px;font-weight:800;font-size:13px;
+}
+.pegar-btn{
+    height:40px;border:1px dashed rgba(216,166,75,.5);background:transparent;
+    color:var(--accent-2);border-radius:10px;font-size:13px;font-weight:800;
+}
+.field select{
+    width:100%;border:1px solid var(--border);background:var(--surface);
+    color:#fff;border-radius:12px;padding:12px 13px;outline:none;margin-bottom:11px;
+}
+#pegarMsg{font-size:13px;line-height:1.4;margin-top:10px;color:var(--muted)}
+
 /* PRODUCCIÓN */
 #vistaProduccion{display:none;max-width:620px;margin:0 auto;padding:14px 14px 40px}
 #vistaProduccion h2.ptitulo{font-size:24px;letter-spacing:-.5px}
@@ -381,6 +405,7 @@ img{max-width:100%;display:block}
             <button class="modo-btn active" id="btnBase" onclick="setModoPublico(false)">Precio Base</button>
             <button class="modo-btn" id="btnPublico" onclick="setModoPublico(true)">Venta al Público (+15%)</button>
         </div>
+        <button class="pegar-btn" onclick="abrirPegar()">📋 Pegar pedido</button>
     </div>
 </div>
 
@@ -490,6 +515,33 @@ img{max-width:100%;display:block}
     </div>
 </aside>
 
+<div class="drawer-backdrop" id="backdrop2" onclick="cerrarModales()"></div>
+
+<div class="sheet" id="saboresSheet">
+    <div class="drawer-head">
+        <h2 id="saboresTitulo">Sabores</h2>
+        <button class="close-btn" onclick="cerrarModales()">×</button>
+    </div>
+    <div class="drawer-body" id="saboresBody"></div>
+</div>
+
+<div class="sheet" id="pegarSheet">
+    <div class="drawer-head">
+        <h2>📋 Pegar pedido</h2>
+        <button class="close-btn" onclick="cerrarModales()">×</button>
+    </div>
+    <div class="drawer-body">
+        <div class="field">
+            <label for="pegarProd">PRODUCTO</label>
+            <select id="pegarProd"></select>
+            <label for="pegarTexto">SABOR Y CANTIDAD (uno por línea)</label>
+            <textarea id="pegarTexto" rows="9" placeholder="Albahaca 50&#10;Chimichurri 80&#10;Orégano 110"></textarea>
+        </div>
+        <button class="open-cart" style="width:100%" onclick="cargarPegado()">Cargar al carrito</button>
+        <div id="pegarMsg"></div>
+    </div>
+</div>
+
 <div id="print-container"></div>
 
 <script>
@@ -519,9 +571,21 @@ const productos = [
     {nombre:"Higos en almíbar", precio:4500, img:"higos.jpg", categoria:"Dulces"},
     {nombre:"Mini mortadela", precio:6800, img:"mortadela.jpg", categoria:"Salames"},
     {nombre:"Chacarero bastón", precio:7200, img:"chacarero.jpg", categoria:"Salames"},
-    {nombre:"Salamines picado fino", precio:4500, img:"salamin.jpg", categoria:"Salames"},
+    {nombre:"Salamines picado fino", precio:4200, img:"salamin.jpg", categoria:"Salames"},
     {nombre:"Salame criollo bastón", precio:7500, img:"salame.jpg", categoria:"Salames"}
 ];
+
+/* Sabores: cada producto de la lista genera una variante por sabor (se cargan al carrito como productos aparte) */
+const SABORES_PEDIDO = ["Natural","Orégano","Ají","Chimichurri","Provenzal","Albahaca","Pesto","Locoto","Pimienta negra"];
+const CON_SABORES = ["Criollitos","Criollitos al vacío","Criollos medianos","Queso criollo","Criollo grande"];
+const variantes = {};
+productos.slice().forEach((p,bi)=>{
+    if(!CON_SABORES.includes(p.nombre)) return;
+    variantes[bi] = SABORES_PEDIDO.map(s=>{
+        productos.push({nombre:p.nombre+" - "+s, precio:p.precio, img:p.img, categoria:p.categoria, variante:true, base:bi, sabor:s});
+        return productos.length-1;
+    });
+});
 
 let carrito = Array(productos.length).fill(0);
 const categorias = ["Quesos","Quesillos","Dulces","Salames"];
@@ -585,7 +649,7 @@ function render(){
 
     categorias.forEach(categoria=>{
         const items = productos.map((p,i)=>({p,i})).filter(x =>
-            x.p.categoria===categoria &&
+            x.p.categoria===categoria && !x.p.variante &&
             (!query || x.p.nombre.toLowerCase().includes(query))
         );
         if(!items.length) return;
@@ -601,6 +665,7 @@ function render(){
         items.forEach(({p,i})=>{
             const qty = carrito[i];
             const precio = precioFinal(p);
+            const nSab = variantes[i] ? variantes[i].reduce((s,v)=>s+carrito[v],0) : 0;
             html += `
             <article class="product">
                 <div class="product-media ${p.img ? "" : "no-image"}">
@@ -615,6 +680,7 @@ function render(){
                         <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
                         <button class="plus10" onclick="cambiar(${i},10)">+10</button>
                     </div>
+                    ${variantes[i] ? `<button class="sabores-btn" onclick="abrirSabores(${i})">🧀 Elegir sabores${nSab ? " ("+nSab+")" : ""}</button>` : ""}
                 </div>
             </article>`;
         });
@@ -657,6 +723,100 @@ function cambiar(i,q){
     carrito[i] = Math.max(0, carrito[i] + q);
     actualizarTotal();
     render();
+    if(saborBase !== null) renderSabores();
+}
+
+/* ===== Hojas: sabores y pegar pedido ===== */
+let saborBase = null;
+
+function abrirHoja(id){
+    document.getElementById("backdrop2").classList.add("open");
+    document.getElementById(id).classList.add("open");
+    document.body.style.overflow = "hidden";
+}
+function cerrarModales(){
+    document.getElementById("backdrop2").classList.remove("open");
+    document.getElementById("saboresSheet").classList.remove("open");
+    document.getElementById("pegarSheet").classList.remove("open");
+    document.body.style.overflow = "";
+    saborBase = null;
+}
+
+function abrirSabores(bi){
+    saborBase = bi;
+    renderSabores();
+    abrirHoja("saboresSheet");
+}
+
+function renderSabores(){
+    const p = productos[saborBase];
+    const vs = variantes[saborBase];
+    const tot = vs.reduce((s,v)=>s+carrito[v],0);
+    document.getElementById("saboresTitulo").innerText = p.nombre;
+    document.getElementById("saboresBody").innerHTML =
+        `<div style="color:var(--muted);font-size:12px;margin-bottom:6px">$${money(precioFinal(p))} c/u · cantidad de cada sabor</div>` +
+        vs.map(v=>`
+        <div class="sab-row">
+            <span class="sab-name">${escapeHtml(productos[v].sabor)}</span>
+            <div class="product-actions" style="margin:0">
+                <button class="qty-btn" onclick="cambiar(${v},-1)">−</button>
+                <div class="qty-num">${carrito[v]}</div>
+                <button class="qty-btn" onclick="cambiar(${v},1)">+</button>
+                <button class="plus10" onclick="cambiar(${v},10)">+10</button>
+            </div>
+        </div>`).join("") +
+        `<button class="open-cart" style="width:100%;margin-top:14px" onclick="cerrarModales()">Listo · ${tot} quesos</button>`;
+}
+
+function abrirPegar(){
+    const sel = document.getElementById("pegarProd");
+    if(!sel.options.length){
+        Object.keys(variantes).forEach(bi=>{
+            const o = document.createElement("option");
+            o.value = bi; o.textContent = productos[bi].nombre;
+            sel.appendChild(o);
+        });
+    }
+    document.getElementById("pegarMsg").innerText = "";
+    abrirHoja("pegarSheet");
+}
+
+const normTxt = t => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+const ALIAS_SABORES = [["chimi","Chimichurri"],["natural","Natural"],["oregano","Orégano"],["aji","Ají"],["provenzal","Provenzal"],["albahaca","Albahaca"],["pesto","Pesto"],["locoto","Locoto"],["pimienta","Pimienta negra"]];
+
+function cargarPegado(){
+    const bi = parseInt(document.getElementById("pegarProd").value);
+    const msg = document.getElementById("pegarMsg");
+    const lineas = document.getElementById("pegarTexto").value.split("\n");
+    let cargados = 0, quesos = 0;
+    const noEntendi = [];
+    lineas.forEach(l=>{
+        const nums = l.match(/\d+/g);
+        if(!nums) return;
+        const t = normTxt(l.replace(/\d+/g," "));
+        if(!t || t.startsWith("total")) return;
+        const alias = ALIAS_SABORES.find(a=>t.includes(a[0]));
+        if(!alias){ noEntendi.push(l.trim()); return; }
+        const qty = parseInt(nums[nums.length-1]);
+        const idx = variantes[bi][SABORES_PEDIDO.indexOf(alias[1])];
+        carrito[idx] = qty;
+        cargados++; quesos += qty;
+    });
+    actualizarTotal();
+    render();
+    if(!cargados){
+        msg.style.color = "var(--danger)";
+        msg.innerText = "No encontré ningún sabor con cantidad. Escribilos así: Albahaca 50";
+        return;
+    }
+    if(noEntendi.length){
+        msg.style.color = "var(--accent-2)";
+        msg.innerText = `Cargué ${cargados} sabores (${quesos} quesos). No entendí: ${noEntendi.join(" | ")}`;
+        return;
+    }
+    document.getElementById("pegarTexto").value = "";
+    cerrarModales();
+    abrirCarrito();
 }
 
 function abrirCarrito(){

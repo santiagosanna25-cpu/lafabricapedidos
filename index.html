@@ -787,26 +787,28 @@ const ALIAS_SABORES = [["chimi","Chimichurri"],["natural","Natural"],["oregano",
 function cargarPegado(){
     const bi = parseInt(document.getElementById("pegarProd").value);
     const msg = document.getElementById("pegarMsg");
-    const lineas = document.getElementById("pegarTexto").value.split("\n");
+    const texto = document.getElementById("pegarTexto").value;
     let cargados = 0, quesos = 0;
     const noEntendi = [];
-    lineas.forEach(l=>{
-        const nums = l.match(/\d+/g);
-        if(!nums) return;
-        const t = normTxt(l.replace(/\d+/g," "));
-        if(!t || t.startsWith("total")) return;
-        const alias = ALIAS_SABORES.find(a=>t.includes(a[0]));
-        if(!alias){ noEntendi.push(l.trim()); return; }
-        const qty = parseInt(nums[nums.length-1]);
-        const idx = variantes[bi][SABORES_PEDIDO.indexOf(alias[1])];
-        carrito[idx] = qty;
+    const re = /([^0-9]*)(\d+)/g;
+    let m;
+    while((m = re.exec(texto)) !== null){
+        const t = normTxt(m[1]);
+        if(!t || t.startsWith("total")) continue;
+        let alias = null, pos = -1;
+        ALIAS_SABORES.forEach(a=>{ const k = t.lastIndexOf(a[0]); if(k > pos){ pos = k; alias = a; } });
+        if(!alias){ noEntendi.push((m[1].trim()+" "+m[2]).trim()); continue; }
+        const qty = parseInt(m[2]);
+        carrito[variantes[bi][SABORES_PEDIDO.indexOf(alias[1])]] = qty;
         cargados++; quesos += qty;
-    });
+    }
     actualizarTotal();
     render();
     if(!cargados){
         msg.style.color = "var(--danger)";
-        msg.innerText = "No encontré ningún sabor con cantidad. Escribilos así: Albahaca 50";
+        msg.innerText = texto.trim()
+            ? "No encontré ningún sabor con cantidad. Recibí: \"" + texto.trim().slice(0,50) + "\". Escribilos así: Albahaca 50"
+            : "El cuadro está vacío. Pegá el texto en el cuadro de arriba.";
         return;
     }
     if(noEntendi.length){

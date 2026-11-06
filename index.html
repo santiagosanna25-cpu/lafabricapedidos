@@ -457,11 +457,17 @@ img{max-width:100%;display:block}
   </div>
 
   <div class="card">
-    <h3>Barras</h3>
-    <div class="row">
-      <div class="lbl">Barras<small>1 barra = 10 chicos</small></div>
-      <div class="ctl" id="ctl-barras"></div>
-    </div>
+    <h3>Medianos por sabor</h3>
+    <p style="color:var(--muted);font-size:12px;margin:-4px 0 6px">1 mediano = 1 chico</p>
+    <div id="pMedianos"></div>
+    <div class="big"><span>Total medianos</span><strong id="pTotalMedianos">0</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>Barras por sabor</h3>
+    <p style="color:var(--muted);font-size:12px;margin:-4px 0 6px">1 barra = 10 chicos</p>
+    <div id="pBarras"></div>
+    <div class="big"><span>Total barras</span><strong id="pTotalBarras">0</strong></div>
   </div>
 
   <div class="card">
@@ -470,6 +476,7 @@ img{max-width:100%;display:block}
       <div><span>Quesos chicos que saldrán</span><b id="c-disp">0</b></div>
       <div><span>− Chicos por sabor</span><b id="c-chicos">0</b></div>
       <div><span>− Chicos usados en grandes</span><b id="c-grandes">0</b></div>
+      <div><span>− Chicos usados en medianos</span><b id="c-medianos">0</b></div>
       <div><span>− Chicos usados en barras</span><b id="c-barras">0</b></div>
     </div>
     <div class="res ok" id="pResultado"></div>
@@ -577,7 +584,7 @@ const productos = [
 
 /* Sabores: cada producto de la lista genera una variante por sabor (se cargan al carrito como productos aparte) */
 const SABORES_PEDIDO = ["Natural","Orégano","Ají","Chimichurri","Provenzal","Albahaca","Pesto","Locoto","Pimienta negra"];
-const CON_SABORES = ["Criollitos","Criollitos al vacío","Criollos medianos","Queso criollo","Criollo grande"];
+const CON_SABORES = ["Criollitos","Criollitos al vacío","Criollos medianos","Queso criollo","Criollo grande","Queso criollo en barra"];
 const variantes = {};
 productos.slice().forEach((p,bi)=>{
     if(!CON_SABORES.includes(p.nombre)) return;
@@ -971,8 +978,8 @@ function verVista(vista){
 /* ================= PRODUCCIÓN ================= */
 const SABORES = ["Naturales","Orégano","Ají","Chimi","Provenzal","Albahaca","Pesto","Locoto","Pimienta"];
 const SABORES_GRANDES = ["Naturales","Orégano","Ají","Provenzal","Chimi","Albahaca","Pimienta","Pesto"];
-const POR_TACHO = 15, CHICOS_POR_GRANDE = 2, CHICOS_POR_BARRA = 10;
-const prod = {tachos:0, barras:0, sabores:SABORES.map(()=>0), grandes:SABORES_GRANDES.map(()=>0)};
+const POR_TACHO = 15, CHICOS_POR_GRANDE = 2, CHICOS_POR_BARRA = 10, CHICOS_POR_MEDIANO = 1;
+const prod = {tachos:0, sabores:SABORES.map(()=>0), medianos:SABORES.map(()=>0), grandes:SABORES_GRANDES.map(()=>0), barras:SABORES.map(()=>0)};
 const suma = a => a.reduce((x,y)=>x+y,0);
 
 function prodCtl(el,get,set){
@@ -1000,9 +1007,10 @@ function prodFilas(idCaja, nombres, arr){
 function prodInit(){
     document.getElementById("pFecha").innerText = new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     prodCtl(document.getElementById("ctl-tachos"), ()=>prod.tachos, n=>prod.tachos=n);
-    prodCtl(document.getElementById("ctl-barras"), ()=>prod.barras, n=>prod.barras=n);
     prodFilas("pSabores", SABORES, prod.sabores);
+    prodFilas("pMedianos", SABORES, prod.medianos);
     prodFilas("pGrandes", SABORES_GRANDES, prod.grandes);
+    prodFilas("pBarras", SABORES, prod.barras);
     prodCalc();
 }
 
@@ -1011,8 +1019,11 @@ function prodDatos(){
     const chicos = suma(prod.sabores);
     const nG = suma(prod.grandes);
     const g = nG * CHICOS_POR_GRANDE;
-    const b = prod.barras * CHICOS_POR_BARRA;
-    return {disp, chicos, nG, g, b, resta: disp - chicos - g - b};
+    const nM = suma(prod.medianos);
+    const m = nM * CHICOS_POR_MEDIANO;
+    const nB = suma(prod.barras);
+    const b = nB * CHICOS_POR_BARRA;
+    return {disp, chicos, nM, m, nG, g, nB, b, resta: disp - chicos - m - g - b};
 }
 
 function prodCalc(){
@@ -1020,9 +1031,12 @@ function prodCalc(){
     document.getElementById("pDisponibles").innerText = d.disp;
     document.getElementById("pTotalChicos").innerText = d.chicos;
     document.getElementById("pTotalGrandes").innerText = d.nG;
+    document.getElementById("pTotalMedianos").innerText = d.nM;
+    document.getElementById("pTotalBarras").innerText = d.nB;
     document.getElementById("c-disp").innerText = d.disp;
     document.getElementById("c-chicos").innerText = d.chicos;
     document.getElementById("c-grandes").innerText = d.g;
+    document.getElementById("c-medianos").innerText = d.m;
     document.getElementById("c-barras").innerText = d.b;
     const r = document.getElementById("pResultado");
     if(d.resta >= 0){ r.className = "res ok"; r.innerText = "Quedan "+d.resta+" quesos chicos sin asignar"; }
@@ -1031,9 +1045,11 @@ function prodCalc(){
 
 function prodLimpiar(){
     if(!confirm("¿Limpiar toda la producción?")) return;
-    prod.tachos = 0; prod.barras = 0;
+    prod.tachos = 0;
     prod.sabores = SABORES.map(()=>0);
+    prod.medianos = SABORES.map(()=>0);
     prod.grandes = SABORES_GRANDES.map(()=>0);
+    prod.barras = SABORES.map(()=>0);
     prodInit();
 }
 
@@ -1044,13 +1060,16 @@ function prodItems(d){
     ];
     SABORES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.sabores[i], categoria:"QUESOS CHICOS"}));
     items.push({nombre:"Total chicos", cantidad:d.chicos, categoria:"QUESOS CHICOS"});
+    SABORES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.medianos[i], categoria:"QUESOS MEDIANOS"}));
+    items.push({nombre:"Total medianos", cantidad:d.nM, categoria:"QUESOS MEDIANOS"});
     SABORES_GRANDES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.grandes[i], categoria:"QUESOS GRANDES"}));
     items.push({nombre:"Total grandes", cantidad:d.nG, categoria:"QUESOS GRANDES"});
-    items.push({nombre:"Barras", cantidad:prod.barras, categoria:"BARRAS"});
+    SABORES.forEach((s,i)=>items.push({nombre:s, cantidad:prod.barras[i], categoria:"BARRAS"}));
+    items.push({nombre:"Total barras", cantidad:d.nB, categoria:"BARRAS"});
     return items.filter(x=>x.cantidad>0);
 }
 
-function prodVacia(d){ return d.chicos===0 && d.nG===0 && prod.barras===0; }
+function prodVacia(d){ return d.chicos===0 && d.nM===0 && d.nG===0 && d.nB===0; }
 
 async function prodEnviar(){
     const d = prodDatos();

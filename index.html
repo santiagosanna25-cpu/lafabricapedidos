@@ -406,6 +406,7 @@ img{max-width:100%;display:block}
             <button class="modo-btn" id="btnPublico" onclick="setModoPublico(true)">Venta al Público (+15%)</button>
         </div>
         <button class="pegar-btn" onclick="abrirPegar()">📋 Pegar pedido</button>
+        <button class="pegar-btn" onclick="abrirPrecios()">✏️ Editar precios</button>
     </div>
 </div>
 
@@ -505,6 +506,7 @@ img{max-width:100%;display:block}
             <textarea id="detalle" rows="2" placeholder="Ej: feteado, sin sal, retirar por el local..."></textarea>
         </div>
 
+        <div style="color:var(--muted);font-size:11px;margin-bottom:6px">Tocá un precio para cambiarlo (solo en este pedido).</div>
         <div id="cartList" class="cart-list"></div>
 
         <div class="cart-totals">
@@ -515,6 +517,7 @@ img{max-width:100%;display:block}
         </div>
 
         <div class="drawer-actions">
+            <button id="btnCopiar" class="action" style="grid-column:1/-1;background:var(--accent);color:#1b1307" onclick="copiarPedido()">📋 Copiar pedido</button>
             <button class="action wa" onclick="enviarPedido()">📱 WhatsApp</button>
             <button class="action print" onclick="enviarEImprimirPedido()">🖨️ Enviar e imprimir</button>
         </div>
@@ -546,6 +549,18 @@ img{max-width:100%;display:block}
         </div>
         <button class="open-cart" style="width:100%" onclick="cargarPegado()">Cargar al carrito</button>
         <div id="pegarMsg"></div>
+    </div>
+</div>
+
+<div class="sheet" id="preciosSheet">
+    <div class="drawer-head">
+        <h2>✏️ Editar precios</h2>
+        <button class="close-btn" onclick="cerrarModales()">×</button>
+    </div>
+    <div class="drawer-body">
+        <div style="color:var(--muted);font-size:12px;margin-bottom:8px">Precio base. Los sabores usan el precio del producto y el +15% se calcula solo.</div>
+        <div id="preciosLista"></div>
+        <button class="clear" onclick="resetPrecios()">Volver a los precios originales</button>
     </div>
 </div>
 
@@ -598,6 +613,7 @@ let carrito = Array(productos.length).fill(0);
 const categorias = ["Quesos","Quesillos","Dulces","Salames"];
 
 function precioFinal(p){
+    if(p.precioPedido > 0) return p.precioPedido;
     if(!ventaPublico) return p.precio;
     return Math.round((p.precio * 1.15) / 100) * 100;
 }
@@ -715,7 +731,7 @@ function renderCart(){
             <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" onerror="this.style.visibility='hidden'">
             <div>
                 <div class="cart-item-name">${escapeHtml(p.nombre)}</div>
-                <div class="cart-item-price">${carrito[i]} × $${money(precio)} = $${money(precio*carrito[i])}</div>
+                <div class="cart-item-price">${carrito[i]} × $<input type="number" inputmode="numeric" min="0" value="${precio}" style="width:76px;height:26px;text-align:center;border:1px solid rgba(216,166,75,.4);border-radius:7px;background:var(--bg);color:var(--accent-2);font-weight:800;font-size:12px" onfocus="this.select()" onchange="setPrecioPedido(${i},this.value)"> = $${money(precio*carrito[i])}</div>
             </div>
             <div class="cart-item-controls">
                 <button class="mini-btn" onclick="cambiar(${i},-1)">−</button>
@@ -726,14 +742,27 @@ function renderCart(){
     `}).join("");
 }
 
-function cambiar(i,q){
-    carrito[i] = Math.max(0, carrito[i] + q);
+function setPrecioPedido(i,v){
+    const n = parseInt(v);
+    productos[i].precioPedido = n > 0 ? n : null;
     actualizarTotal();
     render();
     if(saborBase !== null) renderSabores();
 }
 
-/* ===== Hojas: sabores y pegar pedido ===== */
+function limpiarPreciosPedido(){
+    productos.forEach(p=>{ p.precioPedido = null; });
+}
+
+function cambiar(i,q){
+    carrito[i] = Math.max(0, carrito[i] + q);
+    if(carrito[i] === 0) productos[i].precioPedido = null;
+    actualizarTotal();
+    render();
+    if(saborBase !== null) renderSabores();
+}
+
+/* ===== Hojas: sabores, pegar pedido y precios ===== */
 let saborBase = null;
 
 function abrirHoja(id){
@@ -745,6 +774,7 @@ function cerrarModales(){
     document.getElementById("backdrop2").classList.remove("open");
     document.getElementById("saboresSheet").classList.remove("open");
     document.getElementById("pegarSheet").classList.remove("open");
+    document.getElementById("preciosSheet").classList.remove("open");
     document.body.style.overflow = "";
     saborBase = null;
 }
@@ -828,6 +858,55 @@ function cargarPegado(){
     abrirCarrito();
 }
 
+/* ===== Editar precios (se guardan en este dispositivo) ===== */
+const PRECIOS_KEY = "lafabrica_precios";
+
+function guardarPrecios(){
+    const m = {};
+    productos.forEach(p=>{ if(!p.variante) m[p.nombre] = p.precio; });
+    try{ localStorage.setItem(PRECIOS_KEY, JSON.stringify(m)); }catch(e){}
+}
+
+function aplicarPreciosGuardados(){
+    let m = {};
+    try{ m = JSON.parse(localStorage.getItem(PRECIOS_KEY) || "{}"); }catch(e){}
+    productos.forEach(p=>{ if(!p.variante && m[p.nombre] > 0) p.precio = m[p.nombre]; });
+    productos.forEach(p=>{ if(p.variante) p.precio = productos[p.base].precio; });
+}
+
+function renderPrecios(){
+    document.getElementById("preciosLista").innerHTML = productos
+        .map((p,i)=>({p,i})).filter(x=>!x.p.variante)
+        .map(({p,i})=>`
+        <div class="sab-row">
+            <span class="sab-name" style="font-size:14px">${escapeHtml(p.nombre)}</span>
+            <input type="number" inputmode="numeric" min="0" value="${p.precio}"
+                style="width:100px;height:38px;text-align:center;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:#fff;font-weight:800"
+                onfocus="this.select()" onchange="setPrecio(${i},this.value)">
+        </div>`).join("");
+}
+
+function setPrecio(i,v){
+    const n = parseInt(v);
+    if(!(n > 0)){ renderPrecios(); return; }
+    productos[i].precio = n;
+    productos.forEach(p=>{ if(p.variante && p.base === i) p.precio = n; });
+    guardarPrecios();
+    render();
+    actualizarTotal();
+}
+
+function resetPrecios(){
+    if(!confirm("¿Volver a los precios originales?")) return;
+    try{ localStorage.removeItem(PRECIOS_KEY); }catch(e){}
+    location.reload();
+}
+
+function abrirPrecios(){
+    renderPrecios();
+    abrirHoja("preciosSheet");
+}
+
 function abrirCarrito(){
     document.getElementById("drawer").classList.add("open");
     document.getElementById("backdrop").classList.add("open");
@@ -843,6 +922,7 @@ function vaciarCarrito(){
     if(!carrito.some(c=>c>0)) return;
     if(!confirm("¿Vaciar todo el carrito?")) return;
     carrito=Array(productos.length).fill(0);
+    limpiarPreciosPedido();
     actualizarTotal();
     render();
 }
@@ -890,6 +970,23 @@ function enviarPedido(){
     window.open("https://wa.me/5493816062471?text="+encodeURIComponent(m),"_blank");
 }
 
+async function copiarPedido(){
+    const m=armarMensaje();
+    if(!m) return;
+    try{
+        await navigator.clipboard.writeText(m);
+    }catch(e){
+        const t=document.createElement("textarea");
+        t.value=m; t.style.position="fixed"; t.style.opacity="0";
+        document.body.appendChild(t); t.select();
+        try{ document.execCommand("copy"); }catch(_){}
+        t.remove();
+    }
+    const b=document.getElementById("btnCopiar");
+    b.innerText="✅ ¡Copiado!";
+    setTimeout(()=>{ b.innerText="📋 Copiar pedido"; },1800);
+}
+
 async function enviarEImprimirPedido(){
     const datos=validarPedido();
     if(!datos) return;
@@ -915,6 +1012,7 @@ async function enviarEImprimirPedido(){
         if(!data.ok) throw new Error(data.error || "No se pudo registrar el pedido");
         alert(`✅ Pedido #${data.numero} recibido.\n\nSe enviará automáticamente a la impresora.`);
         carrito=Array(productos.length).fill(0);
+        limpiarPreciosPedido();
         document.getElementById("nombre").value="";
         document.getElementById("detalle").value="";
         actualizarTotal(); render(); cerrarCarrito();
@@ -1112,6 +1210,7 @@ function prodImprimir(){
     window.print();
 }
 
+aplicarPreciosGuardados();
 renderCategories();
 render();
 actualizarTotal();

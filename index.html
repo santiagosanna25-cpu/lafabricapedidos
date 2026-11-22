@@ -181,6 +181,7 @@ img{max-width:100%;display:block}
 .product-info{padding:12px}
 .name{font-weight:750;font-size:15px;line-height:1.25;min-height:38px}
 .price{margin-top:5px;font-size:16px;font-weight:800;color:var(--accent-2)}
+.price small{font-size:12px;font-weight:700;color:var(--muted)}
 .product-actions{display:flex;align-items:center;gap:6px;margin-top:11px}
 .qty-btn{
     width:38px;height:38px;border:1px solid var(--border);border-radius:11px;
@@ -188,6 +189,11 @@ img{max-width:100%;display:block}
 }
 .qty-btn:active{transform:scale(.94)}
 .qty-num{min-width:28px;text-align:center;font-weight:800}
+.kg-input{
+    flex:1;min-width:0;width:100%;height:38px;text-align:center;
+    border:1px solid rgba(216,166,75,.4);border-radius:11px;
+    background:var(--bg);color:var(--accent-2);font-weight:800;font-size:15px;outline:none;
+}
 .add-btn{
     flex:1;height:38px;border:0;border-radius:11px;background:var(--accent);
     color:#1b1307;font-weight:800;
@@ -278,6 +284,7 @@ img{max-width:100%;display:block}
 .sheet.open{transform:translateY(0)}
 .sab-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
 .sab-row .sab-name{font-weight:700;font-size:15px}
+.sab-row .kg-input{width:72px;flex:none}
 .sabores-btn{
     width:100%;margin-top:9px;height:38px;border:1px dashed rgba(216,166,75,.5);
     background:rgba(216,166,75,.08);color:var(--accent-2);border-radius:11px;font-weight:800;font-size:13px;
@@ -364,6 +371,7 @@ img{max-width:100%;display:block}
     .price{font-size:15px}
     .qty-btn{width:34px}
     .plus10{width:43px}
+    .product-actions .kg-input{font-size:14px;padding:0 2px}
 }
 </style>
 </head>
@@ -544,7 +552,7 @@ img{max-width:100%;display:block}
         <div class="field">
             <label for="pegarProd">PRODUCTO</label>
             <select id="pegarProd"></select>
-            <label for="pegarTexto">SABOR Y CANTIDAD (uno por línea)</label>
+            <label for="pegarTexto">SABOR Y CANTIDAD (uno por línea · en barras son kilos, ej: Ají 2,5)</label>
             <textarea id="pegarTexto" rows="9" placeholder="Albahaca 50&#10;Chimichurri 80&#10;Orégano 110"></textarea>
         </div>
         <button class="open-cart" style="width:100%" onclick="cargarPegado()">Cargar al carrito</button>
@@ -558,7 +566,7 @@ img{max-width:100%;display:block}
         <button class="close-btn" onclick="cerrarModales()">×</button>
     </div>
     <div class="drawer-body">
-        <div style="color:var(--muted);font-size:12px;margin-bottom:8px">Precio base. Los sabores usan el precio del producto y el +15% se calcula solo.</div>
+        <div style="color:var(--muted);font-size:12px;margin-bottom:8px">Precio base. Los sabores usan el precio del producto y el +15% se calcula solo. El queso en barra se cobra por kilo.</div>
         <div id="preciosLista"></div>
         <button class="clear" onclick="resetPrecios()">Volver a los precios originales</button>
     </div>
@@ -571,6 +579,7 @@ const PEDIDOS_API = "https://script.google.com/macros/s/AKfycbzGB3lp8TNXR6PSYMMW
 
 let ventaPublico = false;
 
+/* kilo:true → se vende por kilo: la cantidad puede tener decimales y el precio es por kg */
 const productos = [
     {nombre:"Criollitos", precio:4800, img:"criollitos.jpg", categoria:"Quesos"},
     {nombre:"Criollitos al vacío", precio:5100, img:"vacio.jpg", categoria:"Quesos"},
@@ -580,7 +589,7 @@ const productos = [
     {nombre:"Queso cáscara roja", precio:8500, img:"cascararoja.jpg", categoria:"Quesos"},
     {nombre:"Holanda", precio:8500, img:"holanda.jpg", categoria:"Quesos"},
     {nombre:"Queso semiduro", precio:9000, img:"semiduro.jpg", categoria:"Quesos"},
-    {nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg", categoria:"Quesos"},
+    {nombre:"Queso criollo en barra", precio:10000, img:"barra.jpg", categoria:"Quesos", kilo:true},
     {nombre:"Quesillo tradicional", precio:3600, img:"quesillo.jpg", categoria:"Quesillos"},
     {nombre:"Quesillos postre", precio:19000, img:"Quesillos postre.jpg", categoria:"Quesillos"},
     {nombre:"Caciocavallo", precio:10000, img:"caciocavallo.jpg", categoria:"Quesillos"},
@@ -604,7 +613,7 @@ const variantes = {};
 productos.slice().forEach((p,bi)=>{
     if(!CON_SABORES.includes(p.nombre)) return;
     variantes[bi] = SABORES_PEDIDO.map(s=>{
-        productos.push({nombre:p.nombre+" - "+s, precio:p.precio, img:p.img, categoria:p.categoria, variante:true, base:bi, sabor:s});
+        productos.push({nombre:p.nombre+" - "+s, precio:p.precio, img:p.img, categoria:p.categoria, variante:true, base:bi, sabor:s, kilo:!!p.kilo});
         return productos.length-1;
     });
 });
@@ -616,6 +625,30 @@ function precioFinal(p){
     if(p.precioPedido > 0) return p.precioPedido;
     if(!ventaPublico) return p.precio;
     return Math.round((p.precio * 1.15) / 100) * 100;
+}
+
+/* ===== Helpers de cantidad (unidades o kilos) ===== */
+function esKilo(i){ return !!productos[i].kilo; }
+function redondear(n){ return Math.round(n*1000)/1000; }
+function fmtNum(n){ return redondear(n).toLocaleString('es-AR',{maximumFractionDigits:3}); }
+function fmtCant(i){ return fmtNum(carrito[i]); }
+function cantTxt(i){ return esKilo(i) ? fmtCant(i)+" kg" : "x"+carrito[i]; }
+function subtotal(i){ return Math.round(precioFinal(productos[i]) * carrito[i]); }
+function totalPedido(){ return productos.reduce((s,p,i)=>s+subtotal(i),0); }
+
+function controlesHTML(i){
+    if(esKilo(i)){
+        return `
+        <button class="qty-btn" onclick="cambiar(${i},-0.5)">−</button>
+        <input class="kg-input" type="text" inputmode="decimal" placeholder="0 kg" value="${carrito[i] ? fmtCant(i) : ""}" onfocus="this.select()" onchange="setKg(${i},this.value)">
+        <button class="qty-btn" onclick="cambiar(${i},0.5)">+</button>
+        <button class="plus10" onclick="cambiar(${i},1)">+1 kg</button>`;
+    }
+    return `
+        <button class="qty-btn" onclick="cambiar(${i},-1)">−</button>
+        <div class="qty-num">${carrito[i]}</div>
+        <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
+        <button class="plus10" onclick="cambiar(${i},10)">+10</button>`;
 }
 
 function setModoPublico(activo){
@@ -635,10 +668,11 @@ function escapeHtml(value){
     return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
-function totalProductos(){ return carrito.reduce((s,c)=>s+c,0); }
+/* Los productos por kilo cuentan como 1 renglón, no por cada kilo */
+function totalProductos(){ return carrito.reduce((s,c,i)=>s + (esKilo(i) ? (c>0 ? 1 : 0) : c),0); }
 
 function actualizarTotal(){
-    const total = productos.reduce((s,p,i)=>s + precioFinal(p) * carrito[i],0);
+    const total = totalPedido();
     document.getElementById("total").innerText = money(total);
     document.getElementById("drawerTotal").innerText = money(total);
     const items = totalProductos();
@@ -686,9 +720,9 @@ function render(){
             <div class="grid">`;
 
         items.forEach(({p,i})=>{
-            const qty = carrito[i];
             const precio = precioFinal(p);
-            const nSab = variantes[i] ? variantes[i].reduce((s,v)=>s+carrito[v],0) : 0;
+            const nSabNum = variantes[i] ? redondear(variantes[i].reduce((s,v)=>s+carrito[v],0)) : 0;
+            const nSab = nSabNum ? (p.kilo ? fmtNum(nSabNum)+" kg" : nSabNum) : "";
             html += `
             <article class="product">
                 <div class="product-media ${p.img ? "" : "no-image"}">
@@ -696,12 +730,9 @@ function render(){
                 </div>
                 <div class="product-info">
                     <div class="name">${escapeHtml(p.nombre)}</div>
-                    <div class="price">$${money(precio)}</div>
+                    <div class="price">$${money(precio)}${p.kilo ? ` <small>/ kg</small>` : ""}</div>
                     <div class="product-actions">
-                        <button class="qty-btn" onclick="cambiar(${i},-1)">−</button>
-                        <div class="qty-num">${qty}</div>
-                        <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
-                        <button class="plus10" onclick="cambiar(${i},10)">+10</button>
+                        ${controlesHTML(i)}
                     </div>
                     ${variantes[i] ? `<button class="sabores-btn" onclick="abrirSabores(${i})">🧀 Elegir sabores${nSab ? " ("+nSab+")" : ""}</button>` : ""}
                 </div>
@@ -726,17 +757,20 @@ function renderCart(){
 
     list.innerHTML = selected.map(({p,i})=>{
         const precio = precioFinal(p);
+        const kilo = esKilo(i);
         return `
         <div class="cart-item">
             <img src="${escapeHtml(p.img)}" alt="${escapeHtml(p.nombre)}" onerror="this.style.visibility='hidden'">
             <div>
                 <div class="cart-item-name">${escapeHtml(p.nombre)}</div>
-                <div class="cart-item-price">${carrito[i]} × $<input type="number" inputmode="numeric" min="0" value="${precio}" style="width:76px;height:26px;text-align:center;border:1px solid rgba(216,166,75,.4);border-radius:7px;background:var(--bg);color:var(--accent-2);font-weight:800;font-size:12px" onfocus="this.select()" onchange="setPrecioPedido(${i},this.value)"> = $${money(precio*carrito[i])}</div>
+                <div class="cart-item-price">${fmtCant(i)}${kilo ? " kg" : ""} × $<input type="number" inputmode="numeric" min="0" value="${precio}" style="width:76px;height:26px;text-align:center;border:1px solid rgba(216,166,75,.4);border-radius:7px;background:var(--bg);color:var(--accent-2);font-weight:800;font-size:12px" onfocus="this.select()" onchange="setPrecioPedido(${i},this.value)">${kilo ? "/kg" : ""} = $${money(subtotal(i))}</div>
             </div>
             <div class="cart-item-controls">
-                <button class="mini-btn" onclick="cambiar(${i},-1)">−</button>
-                <span style="min-width:18px;text-align:center;font-weight:800">${carrito[i]}</span>
-                <button class="mini-btn" onclick="cambiar(${i},1)">+</button>
+                <button class="mini-btn" onclick="cambiar(${i},${kilo ? -0.5 : -1})">−</button>
+                ${kilo
+                    ? `<input type="text" inputmode="decimal" value="${fmtCant(i)}" style="width:44px;height:28px;text-align:center;border:1px solid rgba(216,166,75,.4);border-radius:8px;background:var(--bg);color:#fff;font-weight:800;font-size:13px" onfocus="this.select()" onchange="setKg(${i},this.value)">`
+                    : `<span style="min-width:18px;text-align:center;font-weight:800">${carrito[i]}</span>`}
+                <button class="mini-btn" onclick="cambiar(${i},${kilo ? 0.5 : 1})">+</button>
             </div>
         </div>
     `}).join("");
@@ -755,7 +789,17 @@ function limpiarPreciosPedido(){
 }
 
 function cambiar(i,q){
-    carrito[i] = Math.max(0, carrito[i] + q);
+    carrito[i] = Math.max(0, redondear(carrito[i] + q));
+    if(carrito[i] === 0) productos[i].precioPedido = null;
+    actualizarTotal();
+    render();
+    if(saborBase !== null) renderSabores();
+}
+
+/* Cargar kilos escribiendo (acepta coma o punto: 2,5 / 2.5) */
+function setKg(i,v){
+    const n = parseFloat(String(v).replace(",","."));
+    carrito[i] = n > 0 ? redondear(n) : 0;
     if(carrito[i] === 0) productos[i].precioPedido = null;
     actualizarTotal();
     render();
@@ -788,21 +832,19 @@ function abrirSabores(bi){
 function renderSabores(){
     const p = productos[saborBase];
     const vs = variantes[saborBase];
-    const tot = vs.reduce((s,v)=>s+carrito[v],0);
+    const tot = redondear(vs.reduce((s,v)=>s+carrito[v],0));
+    const kilo = !!p.kilo;
     document.getElementById("saboresTitulo").innerText = p.nombre;
     document.getElementById("saboresBody").innerHTML =
-        `<div style="color:var(--muted);font-size:12px;margin-bottom:6px">$${money(precioFinal(p))} c/u · cantidad de cada sabor</div>` +
+        `<div style="color:var(--muted);font-size:12px;margin-bottom:6px">$${money(precioFinal(p))} ${kilo ? "por kg · kilos de cada sabor" : "c/u · cantidad de cada sabor"}</div>` +
         vs.map(v=>`
         <div class="sab-row">
             <span class="sab-name">${escapeHtml(productos[v].sabor)}</span>
             <div class="product-actions" style="margin:0">
-                <button class="qty-btn" onclick="cambiar(${v},-1)">−</button>
-                <div class="qty-num">${carrito[v]}</div>
-                <button class="qty-btn" onclick="cambiar(${v},1)">+</button>
-                <button class="plus10" onclick="cambiar(${v},10)">+10</button>
+                ${controlesHTML(v)}
             </div>
         </div>`).join("") +
-        `<button class="open-cart" style="width:100%;margin-top:14px" onclick="cerrarModales()">Listo · ${tot} quesos</button>`;
+        `<button class="open-cart" style="width:100%;margin-top:14px" onclick="cerrarModales()">Listo · ${kilo ? fmtNum(tot)+" kg" : tot+" quesos"}</button>`;
 }
 
 function abrirPegar(){
@@ -825,9 +867,10 @@ function cargarPegado(){
     const bi = parseInt(document.getElementById("pegarProd").value);
     const msg = document.getElementById("pegarMsg");
     const texto = document.getElementById("pegarTexto").value;
+    const kilo = !!productos[bi].kilo;
     let cargados = 0, quesos = 0;
     const noEntendi = [];
-    const re = /([^0-9]*)(\d+)/g;
+    const re = /([^0-9]*)(\d+(?:[.,]\d+)?)/g;
     let m;
     while((m = re.exec(texto)) !== null){
         const t = normTxt(m[1]);
@@ -835,10 +878,13 @@ function cargarPegado(){
         let alias = null, pos = -1;
         ALIAS_SABORES.forEach(a=>{ const k = t.lastIndexOf(a[0]); if(k > pos){ pos = k; alias = a; } });
         if(!alias){ noEntendi.push((m[1].trim()+" "+m[2]).trim()); continue; }
-        const qty = parseInt(m[2]);
+        let qty = parseFloat(m[2].replace(",","."));
+        qty = kilo ? redondear(qty) : Math.round(qty);
         carrito[variantes[bi][SABORES_PEDIDO.indexOf(alias[1])]] = qty;
         cargados++; quesos += qty;
     }
+    quesos = redondear(quesos);
+    const unidad = kilo ? fmtNum(quesos)+" kg" : quesos+" quesos";
     actualizarTotal();
     render();
     if(!cargados){
@@ -850,7 +896,7 @@ function cargarPegado(){
     }
     if(noEntendi.length){
         msg.style.color = "var(--accent-2)";
-        msg.innerText = `Cargué ${cargados} sabores (${quesos} quesos). No entendí: ${noEntendi.join(" | ")}`;
+        msg.innerText = `Cargué ${cargados} sabores (${unidad}). No entendí: ${noEntendi.join(" | ")}`;
         return;
     }
     document.getElementById("pegarTexto").value = "";
@@ -879,7 +925,7 @@ function renderPrecios(){
         .map((p,i)=>({p,i})).filter(x=>!x.p.variante)
         .map(({p,i})=>`
         <div class="sab-row">
-            <span class="sab-name" style="font-size:14px">${escapeHtml(p.nombre)}</span>
+            <span class="sab-name" style="font-size:14px">${escapeHtml(p.nombre)}${p.kilo ? ' <small style="color:var(--muted);font-weight:400">(por kg)</small>' : ''}</span>
             <input type="number" inputmode="numeric" min="0" value="${p.precio}"
                 style="width:100px;height:38px;text-align:center;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:#fff;font-weight:800"
                 onfocus="this.select()" onchange="setPrecio(${i},this.value)">
@@ -953,12 +999,11 @@ function armarMensaje(){
         if(!seleccionados.length) return;
         m += `\n*${categoria.toUpperCase()}*\n`;
         seleccionados.forEach(({p,i})=>{
-            const precio = precioFinal(p);
-            m += `• ${p.nombre} x${carrito[i]} ($${money(precio*carrito[i])})\n`;
+            m += `• ${p.nombre} ${cantTxt(i)} ($${money(subtotal(i))})\n`;
         });
     });
 
-    const total=productos.reduce((s,p,i)=>s+precioFinal(p)*carrito[i],0);
+    const total=totalPedido();
     m += `\n💰 *Total: $${money(total)}*`;
     if(datos.detalle) m += `\n\n📝 Nota: ${datos.detalle}`;
     return m;
@@ -995,8 +1040,8 @@ async function enviarEImprimirPedido(){
         return;
     }
 
-    const items=productos.map((p,i)=>({nombre:p.nombre,precio:precioFinal(p),cantidad:carrito[i],categoria:p.categoria})).filter(x=>x.cantidad>0);
-    const total=items.reduce((s,x)=>s+x.precio*x.cantidad,0);
+    const items=productos.map((p,i)=>({nombre:p.nombre+(p.kilo?" (kg)":""),precio:precioFinal(p),cantidad:carrito[i],categoria:p.categoria})).filter(x=>x.cantidad>0);
+    const total=totalPedido();
 
     const params=new URLSearchParams({
         accion:"crear",
@@ -1026,7 +1071,7 @@ function imprimirPedido(){
     const datos=validarPedido();
     if(!datos) return;
     const fecha=new Date().toLocaleString('es-AR');
-    const total=productos.reduce((s,p,i)=>s+precioFinal(p)*carrito[i],0);
+    const total=totalPedido();
 
     let ticketHtml=`
       <div style="text-align:center;">
@@ -1044,8 +1089,8 @@ function imprimirPedido(){
         ticketHtml += `<div class="categoria-ticket">${categoria.toUpperCase()}</div><table>`;
         seleccionados.forEach(({p,i})=>{
             const precio = precioFinal(p);
-            const subtotal=precio*carrito[i];
-            ticketHtml += `<tr><td>${escapeHtml(p.nombre)}<br>${carrito[i]} x $${money(precio)}</td><td>$${money(subtotal)}</td></tr>`;
+            const detalleCant = esKilo(i) ? `${fmtCant(i)} kg x $${money(precio)}/kg` : `${carrito[i]} x $${money(precio)}`;
+            ticketHtml += `<tr><td>${escapeHtml(p.nombre)}<br>${detalleCant}</td><td>$${money(subtotal(i))}</td></tr>`;
         });
         ticketHtml += `</table>`;
     });

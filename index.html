@@ -636,7 +636,7 @@ function cantTxt(i){ return esKilo(i) ? fmtCant(i)+" kg" : "x"+carrito[i]; }
 function subtotal(i){ return Math.round(precioFinal(productos[i]) * carrito[i]); }
 function totalPedido(){ return productos.reduce((s,p,i)=>s+subtotal(i),0); }
 
-function controlesHTML(i){
+function controlesHTML(i, editable){
     if(esKilo(i)){
         return `
         <button class="qty-btn" onclick="cambiar(${i},-0.5)">−</button>
@@ -644,11 +644,24 @@ function controlesHTML(i){
         <button class="qty-btn" onclick="cambiar(${i},0.5)">+</button>
         <button class="plus10" onclick="cambiar(${i},1)">+1 kg</button>`;
     }
+    const centro = editable
+        ? `<input class="kg-input" type="text" inputmode="numeric" placeholder="0" value="${carrito[i] || ""}" onfocus="this.select()" onchange="setCantidad(${i},this.value)">`
+        : `<div class="qty-num">${carrito[i]}</div>`;
     return `
         <button class="qty-btn" onclick="cambiar(${i},-1)">−</button>
-        <div class="qty-num">${carrito[i]}</div>
+        ${centro}
         <button class="qty-btn" onclick="cambiar(${i},1)">+</button>
         <button class="plus10" onclick="cambiar(${i},10)">+10</button>`;
+}
+
+/* Cargar cantidad escribiendo (unidades enteras) */
+function setCantidad(i,v){
+    const n = parseInt(String(v).replace(/[^0-9]/g,""));
+    carrito[i] = n > 0 ? n : 0;
+    if(carrito[i] === 0) productos[i].precioPedido = null;
+    actualizarTotal();
+    render();
+    if(saborBase !== null) renderSabores();
 }
 
 function setModoPublico(activo){
@@ -841,7 +854,7 @@ function renderSabores(){
         <div class="sab-row">
             <span class="sab-name">${escapeHtml(productos[v].sabor)}</span>
             <div class="product-actions" style="margin:0">
-                ${controlesHTML(v)}
+                ${controlesHTML(v,true)}
             </div>
         </div>`).join("") +
         `<button class="open-cart" style="width:100%;margin-top:14px" onclick="cerrarModales()">Listo · ${kilo ? fmtNum(tot)+" kg" : tot+" quesos"}</button>`;
